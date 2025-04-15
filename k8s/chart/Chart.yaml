@@ -1,0 +1,7 @@
+apiVersion: v1
+name: alcl-java-spring-boot-template
+version: "1.0.0"
+description: API for springboot application
+maintainers: 
+  - name: Kamran Manzoor
+    email: kamran.manzoor@microsoft.com

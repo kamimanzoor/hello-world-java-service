@@ -1,0 +1,8 @@
+deploy:
+  env: "dev"
+autoscaling:
+  # Horizontal K8s pods autoscaling setting with min/max pods and average CPU utilization in %
+  enabled: false
+config:
+  envs:
+    - ENTITY_TYPE: "individual_customer"

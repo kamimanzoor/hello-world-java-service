@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deploy.name }}
+  annotations:
+    {{- toYaml .Values.annotations | nindent 4 }}
+  labels:
+    product: "{{ .Chart.Name }}"
+    repository: "{{ .Values.deploy.repository }}"    
+spec:
+  replicas: {{ .Values.config.replicas }}
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.deploy.name }}
+  template:
+    metadata:
+      annotations:
+        {{- toYaml .Values.annotations | nindent 8 }}
+      labels:
+        product: "{{ .Chart.Name }}"
+        app: {{ .Values.deploy.name }}
+        repository: "{{ .Values.deploy.repository }}"        
+    spec:
+      containers:
+        - image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.version }}"
+          imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+          name: {{ .Values.deploy.name }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            {{- range .Values.config.envs }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          ports:
+          - name: http
+            containerPort: {{ .Values.config.port }}
+          - name: health
+            containerPort: {{ .Values.config.healthPort }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.config.healthPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.config.healthPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 20
+      restartPolicy: Always

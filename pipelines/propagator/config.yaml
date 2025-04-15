@@ -1,0 +1,52 @@
+templates:
+  - template: change-management/cm-commits-validation.yaml.tmpl
+    output: ../commitlint-pipeline.yaml
+    inputs:
+      CommonPipelinesVersion: "3.16.3"
+  - template: k8s/pipelines-ci.yaml.tmpl
+    output: ../pipelines-ci.yml
+    inputs:
+      CommonPipelinesVersion: "3.16.3"
+      BuildTool: "maven"
+      DeployPipelineName: "hello-world-java-service-CD"
+      ImageName: ""
+      DefaultBranch: "main"
+      CIEnvs:
+      - 'dev'
+      EnvironmentObjects:
+      - ServiceConn: 'ELX-Global-Concent-NonProd'
+        Acr: 'elxacrglnonprod01.azurecr.io'
+        PublishPRImages: true
+      - ServiceConn: 'ELX-Global-Concent-Prod-platform-engineering-stack'
+        Acr: 'elxacrglprod01.azurecr.io'
+        PublishPRImages: false
+  - template: k8s/pipelines-cd.yaml.tmpl
+    output: ../pipelines-cd.yml
+    subtemplates:
+      - template: k8s/vars-dev.yaml.tmpl
+        output: ../vars-dev.yaml
+      - template: k8s/vars-dev_na.yaml.tmpl
+        output: ../vars-dev_na.yaml
+      - template: k8s/vars-dev_private.yaml.tmpl
+        output: ../vars-dev_private.yaml
+      - template: k8s/vars-oneintegration.yaml.tmpl
+        output: ../vars-oneintegration.yaml
+      - template: k8s/vars-oneintegration_private.yaml.tmpl
+        output: ../vars-oneintegration_private.yaml
+      - template: k8s/vars-oneintegration_na.yaml.tmpl
+        output: ../vars-oneintegration_na.yaml
+    inputs:
+      CommonPipelinesVersion: "3.16.3"
+      DefaultDeployEnv: "dev"
+      HelmReleaseName: "template-java-svc"
+      CDEnvs:
+      - 'dev'
+      - 'dev_private'
+      - 'dev_na'
+      - 'oneintegration'
+      - 'oneintegration_private'
+      - 'oneintegration_na'
+      DevSvcConnection: "ELX-Global-Concent-NonProd"
+      DevNamespace: "platform-eng-dev"
+      OneintegrationSvcConnection: "ELX-Global-Concent-NonProd"
+      OneintegrationNamespace: "platform-eng-oneint"
