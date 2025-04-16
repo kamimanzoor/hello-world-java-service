@@ -3,15 +3,8 @@ trigger:
     include:
     - 'main'
 
-resources:
-  repositories:
-  - repository: pipelines
-    type: git
-    name: platform-engineering-stack/common-pipelines
-    ref: refs/tags/3.16.3
-
 extends:
-  template: k8s-pipelines/pipelines-ci-tbd.yaml@pipelines
+  template: pipelines-ci-tbd.yaml@pipelines
   parameters:
     buildTool: 'maven'
     deployPipelineName: 'hello-world-java-service-CD'

@@ -7,34 +7,16 @@ parameters:
   default: dev
   values:
   - 'dev'
-  - 'dev_private'
-  - 'dev_na'
-  - 'oneintegration'
-  - 'oneintegration_private'
-
-resources:
-  repositories:
-  - repository: pipelines
-    type: git
-    name: platform-engineering-stack/common-pipelines
-    ref: refs/tags/3.16.3
+  - 'preprod'
 
 variables:
   - template: vars-${{ parameters.environment }}.yaml
-  - name: envWithoutPrivateSuffix
-    ${{ if contains(parameters.environment, 'private') }}:
-      value: ${{ format('{0}', replace(parameters.environment, '_private', '')) }}
-    ${{ else }}:
-      value: ${{ parameters.environment }}
+
 extends:
-  template: k8s-pipelines/pipelines-cd.yaml@pipelines
+  template: pipelines-cd.yaml
   parameters:
     cluster: ${{variables.cluster}}
     serviceConn: ${{variables.serviceConn}}
     namespace: ${{variables.namespace}}
     environment: '${{parameters.environment}}'
-    helmReleaseName: 'template-java-svc-$(envWithoutPrivateSuffix)'
-    ${{ if contains(parameters.environment, 'private') }}:
-      chartValuesFiles:
-      - 'values-$(envWithoutPrivateSuffix).yaml'
-      - 'values-${{parameters.environment}}.yaml'
+    helmReleaseName: 'hello-world-java-svc'

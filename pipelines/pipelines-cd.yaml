@@ -1,0 +1,47 @@
+trigger: none
+
+parameters:
+- name: cluster
+  type: string
+  displayName: "AKS cluster for deployment"
+  default: demo-aks-cluster-dev
+  values:
+  - demo-aks-cluster-dev
+  - demo-aks-cluster-preprod
+- name: serviceConn
+  type: string
+  displayName: "Service Connection to use for deployment"
+- name: environment
+  type: string
+  displayName: "Environment to deploy"
+- name: namespace
+  type: string
+  displayName: "Namespace for deployment"
+- name: helmReleaseName
+  type: string
+  displayName: "Name of the helm release"
+- name: version
+  type: string
+  displayName: "Version of the image to deploy. If left empty it will be auto-determined based on trunk based development/semver"
+  default: ' '
+- name: helmTimeout
+  type: string
+  default: '1h0m'
+  displayName: 'Timeout to be used for helm deploy task. Defaults to 1h'
+
+stages:
+- stage: 'deploy'
+  variables:
+    - template: vars-${{ parameters.cluster }}.yaml
+  jobs:
+  - template: deploy_job.yaml
+    parameters:
+      environment: '${{parameters.environment}}'
+      namespace: '${{parameters.namespace}}'
+      serviceConn: '${{parameters.serviceConn}}'
+      version: '${{parameters.version}}'
+      helmReleaseName: '${{parameters.helmReleaseName}}'
+      helmTimeout: ${{parameters.helmTimeout}}
+      acr: ${{variables.acr}}
+      azureResourceGroup: ${{variables.azureResourceGroup}}
+      kubernetesCluster: ${{variables.kubernetesCluster}}

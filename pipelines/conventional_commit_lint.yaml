@@ -1,0 +1,52 @@
+parameters:
+- name: agentPool
+  type: string
+  default: ''
+- name: vmImage
+  type: string
+  default: 'ubuntu-latest'
+  displayName: 'Only relevant for Microsoft-hosted pool'
+
+jobs:
+- job: pr_commit_lint
+  condition: eq(variables['Build.Reason'], 'PullRequest')
+  pool:
+    ${{ if ne(parameters.agentPool, '') }}:
+      name: ${{ parameters.agentPool }}
+    ${{ if eq(parameters.agentPool, '') }}:
+      vmImage: ${{ parameters.vmImage }}
+  displayName: Lint commits
+  steps:
+  - checkout: self
+    fetchDepth: 0
+  - ${{ if ne(parameters.vmImage, '') }}:
+    - task: NodeTool@0
+      displayName: Use node v20
+      inputs:
+        versionSpec: '20.x'
+  - ${{ if ne(parameters.vmImage, '') }}:
+    - script: |
+        ls -la
+        npm install -g @commitlint/{cli,config-conventional}
+      displayName: Install commitlint
+  - script: |
+      if ls *commitlint.* >/dev/null 2>&1; then
+        echo an existing commitlint configuration was found
+        echo make sure your config file is as per the accepted configuration files listed https://github.com/conventional-changelog/commitlint#config
+      else
+        echo "module.exports = { extends: ['@commitlint/config-conventional'] };" > commitlint.config.js
+      fi
+    displayName: Configure commitlint
+
+  - script: |
+      echo "System_CollectionUri=$(System.CollectionUri)"
+      echo "REPO=$(Build.Repository.ID)"
+      echo "PR=$(System.PullRequest.PullRequestId)"
+      num_commits="$(curl -u azdo:$SYSTEM_ACCESSTOKEN \
+        $(System.CollectionUri)_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/commits?api-version=5.1 \
+        | jq -r .count)"
+      echo "number of commits in PR=$num_commits"
+      commitlint --from $(System.PullRequest.SourceCommitId)~$num_commits --to $(System.PullRequest.SourceCommitId) --verbose
+    displayName: Validate PR commits with commitlint
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)

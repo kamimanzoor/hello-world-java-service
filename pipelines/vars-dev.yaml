@@ -1,4 +1,4 @@
 variables:
-  serviceConn: 'ELX-Global-Concent-NonProd'
-  namespace: 'platform-eng-dev'
-  cluster: 'MSS-EU-NONPROD-PUBLIC'
+  serviceConn: 'demo-svc-conn-aks'
+  namespace: 'default'
+  cluster: 'oas-aks-cluster'

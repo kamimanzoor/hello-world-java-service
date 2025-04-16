@@ -1,11 +1,4 @@
 trigger: none
 
-resources:
-  repositories:
-  - repository: pipelines
-    type: git
-    name: platform-engineering-stack/common-pipelines
-    ref: refs/tags/3.16.3
-
 extends:
-  template: change-management/conventional_commit_lint.yaml@pipelines
+  template: conventional_commit_lint.yaml

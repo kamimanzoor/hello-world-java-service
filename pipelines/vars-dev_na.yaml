@@ -1,4 +1,0 @@
-variables:
-  serviceConn: 'ELX-Global-Concent-NonProd'
-  namespace: 'platform-eng-dev'
-  cluster: 'MSS-NA-NONPROD-PRIV'

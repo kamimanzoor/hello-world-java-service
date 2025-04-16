@@ -1,0 +1,171 @@
+parameters:
+- name: environmentObjects
+  type: object
+  default:
+    - serviceConn: 'demo-svc-conn-aks'
+      acr: 'mydemoacr1604.azurecr.io'
+      publishPRImages: true
+- name: defaultBranch
+  type: string
+  default: 'main'
+- name: buildTool
+  type: string
+  displayName: 'docker expects a Dockerfile at root of repo. maven expects pom.xml with jib plugin'
+  default: 'docker'
+  values:
+  - docker
+  - maven
+- name: imageName
+  type: string
+  default: ''
+  displayName: 'Provide name for the container image to build. If left empty, project/repo will be used by default'
+- name: deployPipelineName
+  type: string
+  displayName: 'Name of the deployment pipeline to trigger on PRs and main builds'
+- name: envsToDeploy
+  type: object
+  default: ['dev']
+  displayName: 'Environments to deploy on PRs and main builds'
+
+variables:
+  - name: imageName
+    ${{ if eq( parameters['imageName'], '') }}:
+      value: $(System.TeamProject)/$(Build.Repository.Name)
+    ${{ else }}:
+      value: ${{ parameters.imageName }}
+
+jobs:
+  - job: 'build_publish_image'
+    displayName: 'Build & Publish Image'
+    pool:
+      vmImage: ubuntu-latest
+    variables:
+      defaultBranchName: ${{ parameters.defaultBranch }}
+      buildTool: ${{ parameters.buildTool }}
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      persistCredentials: true
+
+    - script: |
+        if [[ $(Build.SourceBranch) == "refs/heads/${{ parameters.defaultBranch }}" ]]; then
+          echo "Release needs to be performed as the source is ${{ parameters.defaultBranch }} branch"
+          echo "##vso[task.setvariable variable=PERFORM_RELEASE;]true"
+          echo "##vso[task.setvariable variable=SHA_TAG;]$(Build.SourceVersion)"
+        elif [[ $(Build.Reason) == "PullRequest" ]]; then
+          echo "##vso[task.setvariable variable=SHA_TAG;]$(System.PullRequest.SourceCommitId)"
+        else
+          echo "##vso[task.setvariable variable=SHA_TAG;]$(Build.SourceVersion)"
+        fi
+      displayName: 'Set Variables'
+
+    - script: |
+        npm i -g standard-version
+        standard-version --version
+        git config --global user.email "pipelinebot@bot.com"
+        git config --global user.name "Pipeline Bot"
+      displayName: 'Install standard-version'
+
+    - script: |
+        if [[ "$PERFORM_RELEASE" == "true" ]]; then
+          echo "Using standard-version to get release version"
+          standard-version --git-tag-fallback --packageFiles version.txt --bumpFiles version.txt \
+          -t "" --releaseCommitMessageFormat "chore(release): {{currentTag}} [skip ci]"
+          version=$(git describe --abbrev=0 --tags)
+          echo "version=$version"
+        else
+          echo "Using $SHA_TAG as version"
+          version=$SHA_TAG
+        fi
+        echo "##vso[task.setvariable variable=image_tag;isOutput=true]$version"
+      displayName: 'Version'
+      name: version
+    - ${{ if eq(variables['buildTool'], 'maven') }}:
+      - script: |
+          ./mvnw versions:set -DnewVersion='$(version.image_tag)' -DprocessDependencies=false  \
+          -DprocessPlugins=false -DprocessParent=false -DprocessFromLocalAggregationRoot=false \
+          -DgenerateBackupPoms=false
+        displayName: 'Setting version in pom.xml'
+
+    - ${{ each envObj in parameters.environmentObjects }} :
+        - ${{ if or(eq(variables['Build.SourceBranchName'], variables['defaultBranchName']), eq(envObj.publishPRImages, true)) }}:
+          - task: AzureCLI@2
+            displayName: Build and Push ${{envObj.acr}}
+            inputs:
+              azureSubscription: ${{envObj.serviceConn}}
+              scriptType: bash
+              addSpnToEnvironment: true
+              useGlobalConfig: true
+              scriptLocation: inlineScript
+              inlineScript: |
+                echo "imageName=$(imageName)"
+                TOKEN=$(az acr login --name ${{envObj.acr}} --expose-token --output tsv --query accessToken)
+                docker login ${{envObj.acr}} -u 00000000-0000-0000-0000-000000000000 -p $TOKEN
+                export ACR_USERNAME=00000000-0000-0000-0000-000000000000
+                export ACR_PASSWORD=$TOKEN
+                export ACR=${{envObj.acr}}
+                build_tool="${{ parameters.buildTool }}"
+                if [[ $build_tool == "maven" ]]; then
+                  echo "Maven build tool is provided. Invoking jib pluin to build and publish image"
+                  ./mvnw --batch-mode package -Djib.to.tags=$(SHA_TAG),latest-dev
+                else
+                  echo "Running docker build and push"
+                  image_fullname=${{envObj.acr}}/$(imageName)
+                  docker build -t $image_fullname:$(version.image_tag) -t $image_fullname:$(SHA_TAG) .
+                  docker login ${{envObj.acr}} --username $ACR_USERNAME --password-stdin <<< $ACR_PASSWORD
+                  docker push --all-tags $image_fullname
+                fi
+    - script: |
+        git push --follow-tags origin HEAD:${{ parameters.defaultBranch }}
+      displayName: Push release git tag
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/${{ parameters.defaultBranch }}')
+  - ${{ each env in parameters.envsToDeploy }} :
+        - job: ${{env}}_trigger_deployment
+          displayName: "${{env}}_trigger_deployment"
+          pool:
+            vmImage: ubuntu-latest
+          dependsOn: build_publish_image
+          variables:        
+            image_tag: $[ dependencies.build_publish_image.outputs['version.image_tag'] ]
+          steps:
+          - script: |
+              echo "image_tag=$(image_tag)"
+              if [[ $(Build.SourceBranch) == "refs/heads/${{ parameters.defaultBranch }}" ]]; then
+                echo "Triggering deployment for default branch's build"
+                az pipelines run --branch 'refs/tags/$(image_tag)' --name "${{ parameters.deployPipelineName }}" \
+                --organization '$(System.TeamFoundationCollectionUri)' --project '$(System.TeamProject)' \
+                --parameters environment=${{env}}
+              elif [[ $(Build.Reason) == "PullRequest" ]]; then
+                echo "Triggering deployment for PR builds"
+                run=$(az pipelines run --branch '$(System.PullRequest.SourceBranch)' --name "${{ parameters.deployPipelineName }}" \
+                --organization '$(System.TeamFoundationCollectionUri)' --project '$(System.TeamProject)' \
+                --parameters environment=${{env}})
+                TIMEOUT_SEC="600"
+                start_time="$(date -u +%s)"
+                result="null"
+                while [ "$result" != "succeeded" ]; do
+                  current_time="$(date -u +%s)"
+                  elapsed_seconds=$(($current_time-$start_time))
+                  if [ $elapsed_seconds -gt $TIMEOUT_SEC ]; then
+                    echo "ERROR: Timeout of [$TIMEOUT_SEC] sec with the build result [$result]"
+                    exit 1
+                  fi
+                  build=$(az pipelines build show --organization '$(System.TeamFoundationCollectionUri)' --project '$(System.TeamProject)' --id $(echo "$run" | jq '.id'))
+                  result=$(echo "$build" | jq -r '.result')
+                  echo "Build result status is [$result]"
+                  if [[ "$result" == "failed" ]]; then
+                    echo "Deployment failed. Please check deployment pipeline"
+                    exit 1
+                  fi
+                  echo "Waiting 10 sec, elapsed [$elapsed_seconds] sec"
+                  sleep 10
+                done
+              else
+                echo "Triggering deployments for branch builds"
+                az pipelines run --branch '$(Build.SourceBranch)' --name "${{ parameters.deployPipelineName }}" \
+                --organization '$(System.TeamFoundationCollectionUri)' --project '$(System.TeamProject)' \
+                --parameters environment=${{env}}
+              fi
+            displayName: 'Trigger deployment pipeline ${{ parameters.deployPipelineName }} on ${{env}} env'
+            env:
+              AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)

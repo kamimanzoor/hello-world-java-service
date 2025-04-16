@@ -1,0 +1,137 @@
+parameters:
+- name: environment
+  type: string
+- name: namespace
+  type: string
+- name: acr
+  type: string
+- name: serviceConn
+  type: string
+- name: version
+  type: string
+- name: azureResourceGroup
+  type: string
+- name: kubernetesCluster
+  type: string
+- name: helmReleaseName
+  type: string
+- name: dependsOn
+  type: object
+  default: []
+- name: agentPool
+  type: string
+  default: ''
+- name: vmImage
+  type: string
+  default: 'ubuntu-latest'
+  displayName: 'Only relevant for Microsoft-hosted pool'
+- name: helmTimeout
+  type: string
+  default: '1h0m'
+  displayName: 'Timeout to be used for helm deploy task. Defaults to 1h'
+
+jobs:
+- deployment: '${{ parameters.environment }}_deploy'
+  environment: '${{parameters.environment}}'
+  pool:
+    ${{ if ne(parameters.agentPool, '') }}:
+      name: ${{ parameters.agentPool }}
+    ${{ if eq(parameters.agentPool, '') }}:
+      vmImage: ${{ parameters.vmImage }}
+  dependsOn: ${{ parameters.dependsOn }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - checkout: self
+        - script: |
+            ls -la
+            chart_path="k8s/chart/"
+            echo "Assuming k8s directory in repo itself containing chart files. chart_path=$chart_path"
+            echo "Assuming envs subdir inside k8s"
+            values_path="./k8s/envs"
+            env_specific_file="$values_path/${{parameters.environment}}.yaml"              
+            echo "Setting path to env specific file. env_specific_file=$env_specific_file"
+            values_arg="-f $env_specific_file"
+            echo "##vso[task.setvariable variable=chart_path]$chart_path"
+            echo "##vso[task.setvariable variable=values_path]$values_path"
+            echo "##vso[task.setvariable variable=valuesFileArgument;]$values_arg"
+          displayName: Setting vars like chartpath and default value file
+        - script: |
+            version="${{ parameters.version }}"
+            echo "version=$version"
+            triggeredRef=$(Build.SourceBranch)            
+            # Check if parameter is non-empty and not only whitespace
+            if [ -n "$version" ] && [ -n "$(echo -n "$version" | tr -d '[:space:]')" ]; then
+              echo "Using version=$version as provided by input"
+            # Check if it's a branch or a tag
+            elif [[ "$triggeredRef" == refs/heads/* ]]; then
+              # For branches, set version to the commit hash
+              version=$(Build.SourceVersion)
+            elif [[ "$triggeredRef" == refs/tags/* ]]; then
+              # For tags, set version to the tag name (strip 'refs/tags/' prefix)
+              version=${triggeredRef#refs/tags/}
+            else
+              echo "Unexpected ref format: $triggeredRef"
+              exit 1
+            fi
+
+            # Set the version variable in the pipeline
+            echo "##vso[task.setvariable variable=version]$version"
+            echo "Version is set to: $version"
+          displayName: Determing version to deploy
+        - task: HelmDeploy@0
+          displayName: Performing Dry Run
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: ${{parameters.serviceConn}}
+            azureResourceGroup: ${{parameters.azureResourceGroup}}
+            kubernetesCluster: ${{parameters.kubernetesCluster}}
+            namespace: ${{parameters.namespace}}
+            command: upgrade
+            chartType: FilePath
+            chartPath: '$(chart_path)'
+            releaseName: ${{parameters.helmReleaseName}}
+            arguments: '--dry-run $(valuesFileArgument)'
+            overrideValues: 'image.registry=${{parameters.acr}},image.version=$(version)'
+
+        - task: HelmDeploy@0
+          displayName: Deploying Application
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: ${{parameters.serviceConn}}
+            azureResourceGroup: ${{parameters.azureResourceGroup}}
+            kubernetesCluster: ${{parameters.kubernetesCluster}}
+            namespace: ${{parameters.namespace}}
+            command: upgrade
+            chartType: FilePath
+            chartPath: '$(chart_path)'
+            releaseName: ${{parameters.helmReleaseName}}
+            arguments: '$(valuesFileArgument) --timeout ${{parameters.helmTimeout}}'
+            overrideValues: 'image.registry=${{parameters.acr}},image.version=$(version)'
+
+        - task: HelmDeploy@0
+          displayName: Testing Deployment - Helm Tests
+          name: test
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: ${{parameters.serviceConn}}
+            azureResourceGroup: ${{parameters.azureResourceGroup}}
+            kubernetesCluster: ${{parameters.kubernetesCluster}}
+            namespace: ${{parameters.namespace}}
+            command: test
+            chartType: FilePath
+            chartPath: '$(chart_path)'
+            arguments: ${{parameters.helmReleaseName}}
+            overrideValues: 'image.registry=${{parameters.acr}},image.version=$(version)'
+        - task: HelmDeploy@0
+          displayName: Rolling back as tests failed
+          condition: and(ne(variables['test.helmExitCode'], ''), ne(variables['test.helmExitCode'], 0))
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: ${{parameters.serviceConn}}
+            azureResourceGroup: ${{parameters.azureResourceGroup}}
+            kubernetesCluster: ${{parameters.kubernetesCluster}}
+            namespace: ${{parameters.namespace}}
+            command: rollback
+            arguments: '${{parameters.helmReleaseName}} --timeout ${{parameters.helmTimeout}}'
