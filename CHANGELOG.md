@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/compare/1.1.2...1.1.3) (2025-04-16)
+
+
+### Bug Fixes
+
+* update cluster variable to match development environment ([d4d91c8](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/commit/d4d91c827b45d1da4f096bb5e2a682074fb9f8bf))
+
 ### [1.1.2](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/compare/1.1.1...1.1.2) (2025-04-16)
 
 
