@@ -8,7 +8,7 @@ metadata:
   annotations:
     {{- toYaml .Values.annotations | nindent 4 }}
 spec:
-  type: "ClusterIP"
+  type: "LoadBalancer"
   ports:
   - name: http
     port: {{ .Values.config.port }}
