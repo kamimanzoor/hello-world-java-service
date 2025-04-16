@@ -28,7 +28,7 @@ parameters:
 stages:
 - stage: 'deploy'
   variables:
-    - template: vars-${{ parameters.cluster }}.yaml
+    - template: vars-${{ parameters.environment }}.yaml
   jobs:
   - template: deploy_job.yaml
     parameters:
@@ -40,4 +40,4 @@ stages:
       helmTimeout: ${{parameters.helmTimeout}}
       acr: ${{variables.acr}}
       azureResourceGroup: ${{variables.azureResourceGroup}}
-      kubernetesCluster: ${{variables.kubernetesCluster}}
+      kubernetesCluster: ${{variables.cluster}}
