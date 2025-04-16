@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: "{{ .Values.deploy.name }}-version-test"
-      image: "{{ .Values.image.registry }}/pe/alpine-extended:latest"
+      image: "mcr.microsoft.com/azure-cli:latest"
       imagePullPolicy: Always
       command:
         - /bin/bash
