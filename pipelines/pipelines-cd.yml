@@ -13,7 +13,7 @@ variables:
   - template: vars-${{ parameters.environment }}.yaml
 
 extends:
-  template: pipelines-cd.yaml
+  template: templates/pipelines-cd.yaml
   parameters:
     cluster: ${{variables.cluster}}
     serviceConn: ${{variables.serviceConn}}

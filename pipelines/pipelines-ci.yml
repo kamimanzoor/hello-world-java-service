@@ -4,7 +4,7 @@ trigger:
     - 'main'
 
 extends:
-  template: pipelines-ci-tbd.yaml
+  template: templates/pipelines-ci-tbd.yaml
   parameters:
     buildTool: 'maven'
     deployPipelineName: 'hello-world-java-service-CD'

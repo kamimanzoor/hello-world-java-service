@@ -1,4 +1,4 @@
 trigger: none
 
 extends:
-  template: conventional_commit_lint.yaml
+  template: templates/conventional_commit_lint.yaml
