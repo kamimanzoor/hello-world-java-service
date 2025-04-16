@@ -7,12 +7,12 @@ extends:
   template: templates/pipelines-ci-tbd.yaml
   parameters:
     buildTool: 'maven'
-    deployPipelineName: 'hello-world-java-service-CD'
+    deployPipelineName: 'hello-world-java-service-CD' #Replace with your deployment pipeline name
     imageName: ''
     defaultBranch: 'main'
     environmentObjects:
-    - serviceConn: 'demo-svc-conn-aks'
-      acr: 'mydemoacr1604.azurecr.io'
+    - serviceConn: 'demo-svc-conn-aks' #Replace with your service connection name
+      acr: 'mydemoacr1604.azurecr.io' #Replace with your ACR name
       publishPRImages: true
     envsToDeploy:
     - 'dev'

@@ -1,6 +1,6 @@
 variables:
-  serviceConn: 'demo-svc-conn-aks'
-  azureResourceGroup: 'oas-msvcs-rg'
+  serviceConn: 'demo-svc-conn-aks' #Replace with your service connection name
+  azureResourceGroup: 'oas-msvcs-rg' #Replace with your resource group name
   namespace: 'default'
-  acr: 'mydemoacr1604.azurecr.io'
-  cluster: 'demo-aks-cluster-dev'
+  acr: 'mydemoacr1604.azurecr.io' #Replace with your ACR name
+  cluster: 'demo-aks-cluster-dev' #Replace with your AKS cluster name
