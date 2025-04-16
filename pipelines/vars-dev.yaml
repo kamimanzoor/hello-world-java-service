@@ -3,4 +3,4 @@ variables:
   azureResourceGroup: 'oas-msvcs-rg'
   namespace: 'default'
   acr: 'mydemoacr1604.azurecr.io'
-  cluster: 'oas-aks-cluster'
+  cluster: 'demo-aks-cluster-dev'
