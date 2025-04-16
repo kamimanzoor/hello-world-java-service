@@ -4,10 +4,6 @@ parameters:
 - name: cluster
   type: string
   displayName: "AKS cluster for deployment"
-  default: demo-aks-cluster-dev
-  values:
-  - demo-aks-cluster-dev
-  - demo-aks-cluster-preprod
 - name: serviceConn
   type: string
   displayName: "Service Connection to use for deployment"
