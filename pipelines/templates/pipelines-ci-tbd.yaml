@@ -1,10 +1,6 @@
 parameters:
 - name: environmentObjects
   type: object
-  default:
-    - serviceConn: 'demo-svc-conn-aks'
-      acr: 'mydemoacr1604.azurecr.io'
-      publishPRImages: true
 - name: defaultBranch
   type: string
   default: 'main'

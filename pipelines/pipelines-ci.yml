@@ -10,5 +10,9 @@ extends:
     deployPipelineName: 'hello-world-java-service-CD'
     imageName: ''
     defaultBranch: 'main'
+    environmentObjects:
+    - serviceConn: 'demo-svc-conn-aks'
+      acr: 'mydemoacr1604.azurecr.io'
+      publishPRImages: true
     envsToDeploy:
     - 'dev'
