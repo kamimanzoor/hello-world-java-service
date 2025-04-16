@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.6](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/compare/1.1.5...1.1.6) (2025-04-16)
+
+
+### Bug Fixes
+
+* change service type from LoadBalancer to ClusterIP ([82e3f96](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/commit/82e3f96686d96793003c6f797ca75f789e5a44a2))
+
 ### [1.1.5](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/compare/1.1.4...1.1.5) (2025-04-16)
 
 ### [1.1.4](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/compare/1.1.3...1.1.4) (2025-04-16)
