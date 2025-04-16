@@ -37,6 +37,90 @@ If you are running podman
 podman run -p 8080:8080 local/pe/hello-world-java-service:0-SNAPSHOT
 ```
 
+
+## Forking repo and running the service in your setup Azure Devops & AKS cluster
+In order to run the service in your setup, you need to follow the following steps:
+
+1. Fork the repo.
+2. Ensure the ACR is attached to the AKS cluster. You may use the following command to attach ACR to AKS cluster.
+```bash
+az aks update --name <aks-cluster-name> --resource-group <resource-group-name> --attach-acr <acr-name>
+```
+
+2. Update [pipelines/pipelines-ci.yml](pipelines/pipelines-ci.yml) and [pipelines/vars-dev.yaml](pipelines/vars-dev.yaml) files with your specific values for Azure Container Registry (ACR), Service Connection, Resource Group and AKS cluster details. 
+4. Create 3 new pipelines and corresponding branching policy in your Azure Devops project. The following commands assume that you have already logged in to your Azure account using `az login` command.
+
+```bash
+ORG_NAME=<replace with your org name in azure devops>
+PROJECT_NAME=<replace with your project name in azure devops>
+REPO_NAME=<replace with your repo name in azure devops>
+
+PIPELINES_BRANCH_NAME=main
+REPO_ID=$(az repos list \
+      --organization "https://dev.azure.com/$ORG_NAME" \
+      --project "$PROJECT_NAME" \
+      --query "[?name == '$REPO_NAME'].id" \
+      --output tsv)
+
+PIPELINE_NAME=hello-world-java-service-commitlint
+PIPELINE_PATH=pipelines/commitlint-pipeline.yaml
+
+RESP=$(az pipelines create --name $PIPELINE_NAME \
+      --description "$PIPELINE_NAME pipeline for $REPO_NAME" \
+      --branch $PIPELINES_BRANCH_NAME --yml-path $PIPELINE_PATH \
+      --detect --skip-first-run true --folder-path $PIPELINE_FOLDER_PATH --organization https://dev.azure.com/$ORG_NAME \
+      --project $PROJECT_NAME --repository $REPO_NAME --repository-type 'tfsgit')
+
+PIPE_ID=$(echo $RESP | jq -r '.id')
+
+PROTECTED_BRANCH=main
+BRANCH_POLICY_NAME=conventional-commitlint
+az repos policy build create \
+--blocking true --branch $PROTECTED_BRANCH \
+--build-definition-id $PIPE_ID \
+--display-name $BRANCH_POLICY_NAME --enabled true \
+--repository-id $REPO_ID --manual-queue-only false --queue-on-source-update-only false \
+--valid-duration 0 --detect true --org https://dev.azure.com/$ORG_NAME \
+--project $PROJECT_NAME
+
+PIPELINE_NAME=hello-world-java-service-CI
+PIPELINE_PATH=pipelines/pipelines-ci.yml
+RESP=$(az pipelines create --name $PIPELINE_NAME \
+      --description "$PIPELINE_NAME pipeline for $REPO_NAME" \
+      --branch $PIPELINES_BRANCH_NAME --yml-path $PIPELINE_PATH \
+      --detect --skip-first-run true --folder-path $PIPELINE_FOLDER_PATH --organization https://dev.azure.com/$ORG_NAME \
+      --project $PROJECT_NAME --repository $REPO_NAME --repository-type 'tfsgit')
+
+
+PIPE_ID=$(echo $RESP | jq -r '.id')
+PROTECTED_BRANCH=main
+BRANCH_POLICY_NAME=hello-world-java-service-CI
+az repos policy build create \
+--blocking true --branch $PROTECTED_BRANCH \
+--build-definition-id $PIPE_ID \
+--display-name $BRANCH_POLICY_NAME --enabled true \
+--repository-id $REPO_ID --manual-queue-only false --queue-on-source-update-only false \
+--valid-duration 0 --detect true --org https://dev.azure.com/$ORG_NAME \
+--project $PROJECT_NAME
+
+PIPELINE_NAME=hello-world-java-service-CD
+PIPELINE_PATH=pipelines/pipelines-cd.yml
+az pipelines create --name $PIPELINE_NAME \
+      --description "$PIPELINE_NAME pipeline for $REPO_NAME" \
+      --branch $PIPELINES_BRANCH_NAME --yml-path $PIPELINE_PATH \
+      --detect --skip-first-run true --folder-path $PIPELINE_FOLDER_PATH --organization https://dev.azure.com/$ORG_NAME \
+      --project $PROJECT_NAME --repository $REPO_NAME --repository-type 'tfsgit'
+```
+
+3. You can now run the pipelines manually by executing hello-world-java-service-CI or raise a small PR against `main` branch. The pipeline will build the service and deploy it to your AKS cluster.
+
+4. Once the service is deployed, you can call the service using the following command:
+
+```bash
+kubectl port-forward service/hello-world-java-service 8080:8080
+curl -v http://localhost:8080/hello
+curl -v http://locahost:8080/info
+```
 ## Conventional Commits & Versioning
 We are using [semver](https://semver.org/) for versioning the artifacts from main build/releases. The branch build artifacts are tagged as <git-sha>. Moreover, we have decided to use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for git commits. 
 We have a linter in the pipeline which ensures that commits follow the convention. In order to provide help to developers locally, we have provided a commit-msg git hook. This hook (after adding locally) will lint the git commits and provides feedback in case a commit message doesnot follow the standard.

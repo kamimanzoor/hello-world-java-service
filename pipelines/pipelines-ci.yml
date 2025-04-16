@@ -7,7 +7,7 @@ extends:
   template: templates/pipelines-ci-tbd.yaml
   parameters:
     buildTool: 'maven'
-    deployPipelineName: 'hello-world-java-service-CD' #Replace with your deployment pipeline name
+    deployPipelineName: 'hello-world-java-service-CD'
     imageName: ''
     defaultBranch: 'main'
     environmentObjects:
