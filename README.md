@@ -41,7 +41,8 @@ podman run -p 8080:8080 local/pe/hello-world-java-service:0-SNAPSHOT
 ## Forking repo and running the service in your setup Azure Devops & AKS cluster
 In order to run the service in your setup, you need to follow the following steps:
 
-0. The following steps assume that you have already setup Azure DevOps with an organization, project and a repo.
+0. The following steps assume that you have already setup Azure DevOps with an organization, project and a repo. In order to create a service connection, navigate Project Settings > Service Connections > New service connection > Azure Resource Manager > App registraction (automatic) and select the subscription and resource group where you have the AKS cluster. You may check this screenshot for reference:
+![Service Connection](docs/service_conn.png)
 
 1. Ensure the Azure Container Registry (ACR) is attached to the AKS cluster. You may use the following command to attach ACR to AKS cluster.
 ```bash
