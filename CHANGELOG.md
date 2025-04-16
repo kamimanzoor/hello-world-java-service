@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/compare/1.1.6...1.2.0) (2025-04-16)
+
+
+### Features
+
+* add templates for commit linting and CI/CD pipelines ([4c6bc25](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/commit/4c6bc258f725cc710a3231f6a3edc217c3c46a92))
+
 ### [1.1.6](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/compare/1.1.5...1.1.6) (2025-04-16)
 
 
