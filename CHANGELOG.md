@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/compare/1.2.4...1.3.0) (2025-05-08)
+
+
+### Features
+
+* update greeting message in HelloWorldController and corresponding test ([48d26c3](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/commit/48d26c329b9e915cd610554edd17dfbc21a10884))
+
 ### [1.2.4](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/compare/1.2.3...1.2.4) (2025-04-16)
 
 ### [1.2.3](https://dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service/compare/1.2.2...1.2.3) (2025-04-16)
