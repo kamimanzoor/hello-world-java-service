@@ -41,27 +41,29 @@ podman run -p 8080:8080 local/pe/hello-world-java-service:0-SNAPSHOT
 ## Forking repo and running the service in your setup Azure Devops & AKS cluster
 In order to run the service in your setup, you need to follow the following steps:
 
-0. The following steps assume that you have already setup Azure DevOps with an organization, project and a repo. In order to create a service connection, navigate Project Settings > Service Connections > New service connection > Azure Resource Manager > App registraction (automatic) and select the subscription and resource group where you have the AKS cluster. You may check this screenshot for reference:
+0. The following steps assume that you have already setup Azure DevOps with an organization, project and a repo. Ensure your repo and main branch is empty i.e., without readme file to have smooth experience.
+
+1. In order to create a service connection, navigate Project Settings > Service Connections > New service connection > Azure Resource Manager > App registraction (automatic) and select the subscription and resource group where you have the AKS cluster. You may check this screenshot for reference:
 ![Service Connection](docs/service_conn.png)
 
-1. Ensure the Azure Container Registry (ACR) is attached to the AKS cluster. You may use the following command to attach ACR to AKS cluster.
+2. Ensure the Azure Container Registry (ACR) is attached to the AKS cluster. You may use the following command to attach ACR to AKS cluster.
 ```bash
 az aks update --name <aks-cluster-name> --resource-group <resource-group-name> --attach-acr <acr-name>
 ```
 
-2. Clone this repo using the following command:
+3. Clone this repo using the following command:
 ```bash
 git clone https://kmanzoor@dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service
 ```
 
-3. Update the remote URL of the repo to your forked repo. You may use the following command to update the remote URL:
+4. Update the remote URL of the repo to your forked repo. You may use the following command to update the remote URL:
 ```bash
 git remote set-url origin <your-repo-url>
 ```
 
-4. Update [pipelines/pipelines-ci.yml](pipelines/pipelines-ci.yml) and [pipelines/vars-dev.yaml](pipelines/vars-dev.yaml) files with your specific values for Azure Container Registry (ACR), Service Connection, Resource Group and AKS cluster details. Commit and push the changes to your repo.
+5. Update [pipelines/pipelines-ci.yml](pipelines/pipelines-ci.yml) and [pipelines/vars-dev.yaml](pipelines/vars-dev.yaml) files with your specific values for Azure Container Registry (ACR), Service Connection, Resource Group and AKS cluster details. Commit and push the changes to your repo.
 
-5. Create 3 new pipelines and corresponding branching policy in your Azure Devops project. The following commands assume that you have already logged in to your Azure account using `az login` command.
+6. Create 3 new pipelines and corresponding branching policy in your Azure Devops project. The following commands assume that you have already logged in to your Azure account using `az login` command. The easier way to execute the commands is to copy the below commands in a file and update the values for `ORG_NAME`, `PROJECT_NAME` and `REPO_NAME`. After update, you may copy and paste the commands in your terminal. The commands will create 3 pipelines and branch policies for you.
 
 ```powershell
 $ORG_NAME="<replace with your org name in azure devops>"
@@ -124,16 +126,16 @@ az pipelines create --name $PIPELINE_NAME `
     --project $PROJECT_NAME --repository $REPO_NAME --repository-type 'tfsgit'
 ```
 
-3. The above command will create 3 pipelines in your Azure DevOps project. The pipelines ![Pipelines](docs/pipelines.png) are as follows:
+7. The above command will create 3 pipelines in your Azure DevOps project. The pipelines ![Pipelines](docs/pipelines.png) are as follows:
    - `hello-world-java-service-commitlint`: This pipeline is used to lint the commits and ensure that they follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
    - `hello-world-java-service-CI`: This pipeline is used to build the service and publish the docker image to ACR.
    - `hello-world-java-service-CD`: This pipeline is used to deploy the service to AKS cluster.
 
-4. Branch policies are also created for the `main` branch requiring PR to be raised. The policies ![Branch Policies](docs/branch_policies.png) are as follows:
+8. Branch policies are also created for the `main` branch requiring PR to be raised. The policies ![Branch Policies](docs/branch_policies.png) are as follows:
    - `hello-world-java-service-commitlint`: This policy is used to ensure that the commits follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
    - `hello-world-java-service-CI`: This policy is used to ensure that the service is built and published to ACR.
 
-5. You need to add permissions for the build service account in order for the pipelines to run successfully. This is to ensure we may create and commit changes like changelog via pipelines. Go to Project Settings > Repositories > <your-repo-name> > Security > Users > <your-project-name> Build Service <your-organization-name>. Grant permissions as shown below:
+9. You need to add permissions for the build service account in order for the pipelines to run successfully. This is to ensure we may create and commit changes like changelog via pipelines. Go to Project Settings > Repositories > <your-repo-name> > Security > Users > <your-project-name> Build Service <your-organization-name>. Grant permissions as shown below:
 
 ![Build Service Permissions](docs/build_service.png)
 
@@ -141,9 +143,9 @@ Add this user "<your-project-name> Build Service <your-organization-name>" to th
 
 ![Build Service Contributors](docs/build_service_contr.png)
 
-6. You can now run the pipelines manually by executing hello-world-java-service-CI or raise a small PR against `main` branch. The pipeline will build the service and deploy it to your AKS cluster.
+10. You can now run the pipelines manually by executing hello-world-java-service-CI or raise a small PR against `main` branch. The pipeline will build the service and deploy it to your AKS cluster.
 
-7. Once the service is deployed, you can call the service using the following command:
+11. Once the service is deployed, you can call the service using the following command:
 
 ```bash
 kubectl port-forward service/hello-world-java-service 8080:8080
