@@ -88,6 +88,7 @@ jobs:
             ver="${{ steps.vars.outputs.sha_tag }}"
           fi
           echo "image_tag=$ver" >> $GITHUB_OUTPUT
+          echo "version=$ver" >> $GITHUB_OUTPUT
           echo "Resolved image_tag=$ver"
 
       - name: Push release tag
@@ -109,7 +110,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Build & Push Images
+      - name: Build & Push Image
         env:
           DEFAULT_BRANCH: ${{ inputs.defaultBranch }}
           IMAGE_NAME: ${{ steps.vars.outputs.image_name }}
@@ -136,3 +137,26 @@ jobs:
               docker push "$img:${SHA_TAG}"
             fi
           fi
+
+      - name: Create Release
+        if: steps.vars.outputs.perform_release == 'true'
+        id: create-release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+
+      - name: Trigger Deployment
+        id: trigger-deployment
+        run: |
+          curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -X POST "https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-service.yml/dispatches" \
+            -d "{
+              \"ref\":\"${GIT_REF}\",
+              \"inputs\":{ 
+                \"version\":\"${{ steps.version.outputs.version }}\",
+                \"environment\":\"dev\"
+              }
+            }"

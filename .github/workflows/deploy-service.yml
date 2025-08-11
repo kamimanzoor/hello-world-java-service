@@ -11,14 +11,7 @@ on:
         description: Target environment (e.g. dev)
         required: true
         default: dev
-  push:
-    branches:
-      - main
-    tags:
-      - '*'
-  pull_request:
-    branches:
-      - main
+
 permissions:
   contents: read
   id-token: write
