@@ -1,0 +1,165 @@
+name: deploy-template
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: Target environment (e.g. dev)
+        required: true
+        type: string
+      helmReleaseName:
+        description: Helm release name
+        required: false
+        type: string
+        default: hello-world-java-service
+      imageName:
+        description: Name of the container image
+        required: false
+        type: string
+        default: hello-world-java-service
+      version:
+        description: Explicit image version (optional)
+        required: false
+        default: ""
+        type: string
+      helmTimeout:
+        description: Helm operation timeout
+        required: false
+        default: 1h0m
+        type: string
+      chartPath:
+        description: Path to helm chart
+        required: false
+        default: k8s/chart
+        type: string
+      valuesDir:
+        description: Directory with env values files
+        required: false
+        default: k8s/envs
+        type: string
+    secrets:
+      AZURE_CLIENT_ID:
+        required: true
+      AZURE_TENANT_ID:
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set AKS context
+        run: |
+          az aks get-credentials -g "${{ vars.AKS_RESOURCE_GROUP }}" -n "${{ vars.AKS_CLUSTER_NAME }}" --overwrite-existing
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+
+      - name: Determine version
+        id: ver
+        run: |
+          input_version="${{ inputs.version }}"
+          if [ -n "$(echo "$input_version" | tr -d '[:space:]')" ]; then
+            version="$input_version"
+            echo "Using provided version: $version"
+          else
+            ref="${GITHUB_REF}"
+            if [[ "$ref" == refs/tags/* ]]; then
+              version="${ref#refs/tags/}"
+              echo "Derived version from tag: $version"
+            else
+              version="${GITHUB_SHA}"
+              echo "Derived version from commit SHA: $version"
+            fi
+          fi
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Prepare chart & values
+        id: prep
+        run: |
+          chart_path='${{ inputs.chartPath }}'
+            if [ ! -d "$chart_path" ]; then
+              echo "Chart path $chart_path not found" >&2
+              exit 1
+            fi
+          values_dir='${{ inputs.valuesDir }}'
+          env='${{ inputs.environment }}'
+          values_file="$values_dir/$env.yaml"
+          if [ ! -f "$values_file" ]; then
+            echo "Values file $values_file not found (proceeding without it)"
+            values_arg=""
+          else
+            values_arg="-f $values_file"
+          fi
+          echo "chart_path=$chart_path" >> $GITHUB_OUTPUT
+          echo "values_arg=$values_arg" >> $GITHUB_OUTPUT
+
+      - name: ACR Login
+        run: |
+          az acr login --name "${{ vars.ACR_NAME }}"
+          echo "Logged into ACR: ${{ vars.ACR_NAME }}"
+
+      - name: Helm Dry Run
+        run: |
+          helm upgrade --install "${{ inputs.helmReleaseName }}" "${{ steps.prep.outputs.chart_path }}" \
+            ${{ steps.prep.outputs.values_arg }} \
+            --namespace "${{ vars.namespace }}" \
+            --create-namespace \
+            --set image.registry="${{ vars.ACR_NAME }}" \
+            --set image.name="${{ inputs.imageName }}" \
+            --set image.version="${{ steps.ver.outputs.version }}" \
+            --timeout "${{ inputs.helmTimeout }}" \
+            --dry-run
+
+      - name: Helm Upgrade / Install
+        run: |
+          helm upgrade --install "${{ inputs.helmReleaseName }}" "${{ steps.prep.outputs.chart_path }}" \
+            ${{ steps.prep.outputs.values_arg }} \
+            --namespace "${{ vars.namespace }}" \
+            --create-namespace \
+            --set image.registry="${{ vars.ACR_NAME }}" \
+            --set image.name="${{ inputs.imageName }}" \
+            --set image.version="${{ steps.ver.outputs.version }}" \
+            --timeout "${{ inputs.helmTimeout }}" \
+            --wait
+
+      - name: Helm Tests
+        id: helmtest
+        run: |
+          set +e
+          helm test "${{ inputs.helmReleaseName }}" --namespace "${{ vars.namespace }}"
+          code=$?
+          echo "exit_code=$code" >> $GITHUB_OUTPUT
+          exit 0
+
+      - name: Rollback on failed tests
+        if: ${{ steps.helmtest.outputs.exit_code != '0' }}
+        run: |
+          echo "Helm tests failed, rolling back..."
+          helm rollback "${{ inputs.helmReleaseName }}" --namespace "${{ vars.namespace }}" --wait --timeout "${{ inputs.helmTimeout }}"
+          echo "Rollback complete"
+          exit 1
+
+      - name: Summary
+        if: ${{ success() }}
+        run: |
+          echo "Deployment succeeded."
+          echo "Release: ${{ inputs.helmReleaseName }}"
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Namespace: ${{ vars.namespace }}"
+          echo "Version: ${{ steps.ver.outputs.version }}"
