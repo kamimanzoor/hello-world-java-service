@@ -9,7 +9,7 @@
 	<scm>
 		<connection>scm:git:${project.scm.url}</connection>
 		<developerConnection>scm:git:${project.scm.url}</developerConnection>
-		<url>https://kmanzoor@dev.azure.com/kmanzoor/aks-demos/_git/hello-world-java-service</url>
+		<url>https://github.com/kamimanzoor/hello-world-java-service.git</url>
 		<tag>HEAD</tag>
 	</scm>
 
