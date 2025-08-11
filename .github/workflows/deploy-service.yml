@@ -6,7 +6,7 @@ on:
       version:
         description: Override image version (optional)
         required: false
-        default: ""
+        default: 1d407d64639eadca042f5bc765c05fb5f1f5a856
       environment:
         description: Target environment (e.g. dev)
         required: true
@@ -16,7 +16,9 @@ on:
       - main
     tags:
       - '*'
-
+  pull_request:
+    branches:
+      - main
 permissions:
   contents: read
   id-token: write
