@@ -49,13 +49,16 @@ jobs:
           if [ "$EVENT" = "push" ] && [ "$REF_NAME" = "$DEF" ]; then
             echo "perform_release=true" >> $GITHUB_OUTPUT
             echo "sha_tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+            echo "GIT_REF=$GITHUB_REF" >> "$GITHUB_ENV"
           elif [ "$EVENT" = "pull_request" ]; then
             pr_sha=$(jq -r '.pull_request.head.sha' "$GITHUB_EVENT_PATH")
             echo "perform_release=false" >> $GITHUB_OUTPUT
             echo "sha_tag=${pr_sha}" >> $GITHUB_OUTPUT
+            echo "GIT_REF=${{ github.event.pull_request.head.ref }}" >> "$GITHUB_ENV"
           else
             echo "perform_release=false" >> $GITHUB_OUTPUT
             echo "sha_tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+            echo "GIT_REF=$GITHUB_REF" >> "$GITHUB_ENV"
           fi
           if [ -n "${{ inputs.imageName }}" ]; then
             echo "image_name=${{ inputs.imageName }}" >> $GITHUB_OUTPUT
