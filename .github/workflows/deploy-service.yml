@@ -1,0 +1,28 @@
+name: deploy-service
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Override image version (optional)
+        required: false
+        default: 1d407d64639eadca042f5bc765c05fb5f1f5a856
+      environment:
+        description: Target environment (e.g. dev)
+        required: true
+        default: dev
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      environment: ${{ inputs.environment }}
+      version: ${{ inputs.version }}
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
