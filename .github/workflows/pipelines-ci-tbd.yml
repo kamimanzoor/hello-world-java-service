@@ -149,7 +149,7 @@ jobs:
       - name: Trigger Deployment
         id: trigger-deployment
         run: |
-          curl -s \
+          curl \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -X POST "https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-service.yml/dispatches" \
