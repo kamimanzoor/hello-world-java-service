@@ -19,10 +19,6 @@ on:
         type: string
         required: false
         default: ""
-      environmentObjectsJson:
-        type: string
-        required: false
-        default: ""
     secrets:
       AZURE_CLIENT_ID:
         required: true
@@ -49,99 +45,99 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      # - name: Set variables (PERFORM_RELEASE / SHA_TAG)
-      #   id: vars
-      #   run: |
-      #     EVENT="${GITHUB_EVENT_NAME}"
-      #     REF_NAME="${GITHUB_REF_NAME}"
-      #     DEF="${{ inputs.defaultBranch }}"
-      #     if [ "$EVENT" = "push" ] && [ "$REF_NAME" = "$DEF" ]; then
-      #       echo "perform_release=true" >> $GITHUB_OUTPUT
-      #       echo "sha_tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
-      #     elif [ "$EVENT" = "pull_request" ]; then
-      #       pr_sha=$(jq -r '.pull_request.head.sha' "$GITHUB_EVENT_PATH")
-      #       echo "perform_release=false" >> $GITHUB_OUTPUT
-      #       echo "sha_tag=${pr_sha}" >> $GITHUB_OUTPUT
-      #     else
-      #       echo "perform_release=false" >> $GITHUB_OUTPUT
-      #       echo "sha_tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
-      #     fi
-      #     if [ -n "${{ inputs.imageName }}" ]; then
-      #       echo "image_name=${{ inputs.imageName }}" >> $GITHUB_OUTPUT
-      #     else
-      #       echo "image_name=$(echo "$GITHUB_REPOSITORY" | cut -d/ -f2)" >> $GITHUB_OUTPUT
-      #     fi
-      #     echo "event=$EVENT ref=$REF_NAME"
+      - name: Set variables (PERFORM_RELEASE / SHA_TAG)
+        id: vars
+        run: |
+          EVENT="${GITHUB_EVENT_NAME}"
+          REF_NAME="${GITHUB_REF_NAME}"
+          DEF="${{ inputs.defaultBranch }}"
+          if [ "$EVENT" = "push" ] && [ "$REF_NAME" = "$DEF" ]; then
+            echo "perform_release=true" >> $GITHUB_OUTPUT
+            echo "sha_tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+          elif [ "$EVENT" = "pull_request" ]; then
+            pr_sha=$(jq -r '.pull_request.head.sha' "$GITHUB_EVENT_PATH")
+            echo "perform_release=false" >> $GITHUB_OUTPUT
+            echo "sha_tag=${pr_sha}" >> $GITHUB_OUTPUT
+          else
+            echo "perform_release=false" >> $GITHUB_OUTPUT
+            echo "sha_tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+          fi
+          if [ -n "${{ inputs.imageName }}" ]; then
+            echo "image_name=${{ inputs.imageName }}" >> $GITHUB_OUTPUT
+          else
+            echo "image_name=$(echo "$GITHUB_REPOSITORY" | cut -d/ -f2)" >> $GITHUB_OUTPUT
+          fi
+          echo "event=$EVENT ref=$REF_NAME"
 
-      # - name: Setup Node (release only)
-      #   if: steps.vars.outputs.perform_release == 'true'
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 20
+      - name: Setup Node (release only)
+        if: steps.vars.outputs.perform_release == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      # - name: Install standard-version (release only)
-      #   if: steps.vars.outputs.perform_release == 'true'
-      #   run: |
-      #     npm i -g standard-version
-      #     git config user.email "pipelinebot@bot.com"
-      #     git config user.name "Pipeline Bot"
+      - name: Install standard-version (release only)
+        if: steps.vars.outputs.perform_release == 'true'
+        run: |
+          npm i -g standard-version
+          git config user.email "pipelinebot@bot.com"
+          git config user.name "Pipeline Bot"
 
-      # - name: Compute version
-      #   id: version
-      #   run: |
-      #     if [ "${{ steps.vars.outputs.perform_release }}" = "true" ]; then
-      #       standard-version --git-tag-fallback --packageFiles version.txt --bumpFiles version.txt \
-      #         -t "" --releaseCommitMessageFormat "chore(release): {{currentTag}} [skip ci]"
-      #       ver=$(git describe --abbrev=0 --tags)
-      #     else
-      #       ver="${{ steps.vars.outputs.sha_tag }}"
-      #     fi
-      #     echo "image_tag=$ver" >> $GITHUB_OUTPUT
-      #     echo "Resolved image_tag=$ver"
+      - name: Compute version
+        id: version
+        run: |
+          if [ "${{ steps.vars.outputs.perform_release }}" = "true" ]; then
+            standard-version --git-tag-fallback --packageFiles version.txt --bumpFiles version.txt \
+              -t "" --releaseCommitMessageFormat "chore(release): {{currentTag}} [skip ci]"
+            ver=$(git describe --abbrev=0 --tags)
+          else
+            ver="${{ steps.vars.outputs.sha_tag }}"
+          fi
+          echo "image_tag=$ver" >> $GITHUB_OUTPUT
+          echo "Resolved image_tag=$ver"
 
-      # - name: Push release tag
-      #   if: steps.vars.outputs.perform_release == 'true'
-      #   run: git push --follow-tags origin HEAD:${{ inputs.defaultBranch }}
+      - name: Push release tag
+        if: steps.vars.outputs.perform_release == 'true'
+        run: git push --follow-tags origin HEAD:${{ inputs.defaultBranch }}
 
-      # - name: Setup JDK (maven)
-      #   if: inputs.buildTool == 'maven'
-      #   uses: actions/setup-java@v4
-      #   with:
-      #     distribution: temurin
-      #     java-version: 17
-      #     cache: maven
+      - name: Setup JDK (maven)
+        if: inputs.buildTool == 'maven'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
 
-      # - name: Azure Login
-      #   uses: azure/login@v2
-      #   with:
-      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # - name: Build & Push Images
-      #   env:
-      #     DEFAULT_BRANCH: ${{ inputs.defaultBranch }}
-      #     IMAGE_NAME: ${{ steps.vars.outputs.image_name }}
-      #     IMAGE_TAG: ${{ steps.version.outputs.image_tag }}
-      #     SHA_TAG: ${{ steps.vars.outputs.sha_tag }}
-      #     BUILD_TOOL: ${{ inputs.buildTool }}
-      #     ACR: ${{ inputs.acr }}
-      #   run: |
-      #     EVENT="${GITHUB_EVENT_NAME}"
-      #     REF_NAME="${GITHUB_REF_NAME}"
-      #     echo "Logging into ACR $ACR"
-      #     az acr login --name "$ACR"
-      #     export ACR="$ACR"
-      #     if [ "$BUILD_TOOL" = "maven" ]; then
-      #       ./mvnw versions:set -DnewVersion="${IMAGE_TAG}" -DprocessDependencies=false -DprocessPlugins=false \
-      #         -DprocessParent=false -DprocessFromLocalAggregationRoot=false -DgenerateBackupPoms=false
-      #       # Expect jib configured to use $ACR + IMAGE_NAME internally; fallback to explicit if needed
-      #       ./mvnw --batch-mode package -Djib.to.image="$ACR/${IMAGE_NAME}" -Djib.to.tags="${SHA_TAG},latest-dev"
-      #     else
-      #       img="$ACR/${IMAGE_NAME}"
-      #       docker build -t "$img:${IMAGE_TAG}" -t "$img:${SHA_TAG}" .
-      #       docker push "$img:${IMAGE_TAG}"
-      #       if [ "$IMAGE_TAG" != "$SHA_TAG" ]; then
-      #         docker push "$img:${SHA_TAG}"
-      #       fi
-      #     fi
+      - name: Build & Push Images
+        env:
+          DEFAULT_BRANCH: ${{ inputs.defaultBranch }}
+          IMAGE_NAME: ${{ steps.vars.outputs.image_name }}
+          IMAGE_TAG: ${{ steps.version.outputs.image_tag }}
+          SHA_TAG: ${{ steps.vars.outputs.sha_tag }}
+          BUILD_TOOL: ${{ inputs.buildTool }}
+          ACR: ${{ inputs.acr }}
+        run: |
+          EVENT="${GITHUB_EVENT_NAME}"
+          REF_NAME="${GITHUB_REF_NAME}"
+          echo "Logging into ACR $ACR"
+          az acr login --name "$ACR"
+          export ACR="$ACR"
+          if [ "$BUILD_TOOL" = "maven" ]; then
+            ./mvnw versions:set -DnewVersion="${IMAGE_TAG}" -DprocessDependencies=false -DprocessPlugins=false \
+              -DprocessParent=false -DprocessFromLocalAggregationRoot=false -DgenerateBackupPoms=false
+            # Expect jib configured to use $ACR + IMAGE_NAME internally; fallback to explicit if needed
+            ./mvnw --batch-mode package -Djib.to.image="$ACR/${IMAGE_NAME}" -Djib.to.tags="${SHA_TAG},latest-dev"
+          else
+            img="$ACR/${IMAGE_NAME}"
+            docker build -t "$img:${IMAGE_TAG}" -t "$img:${SHA_TAG}" .
+            docker push "$img:${IMAGE_TAG}"
+            if [ "$IMAGE_TAG" != "$SHA_TAG" ]; then
+              docker push "$img:${SHA_TAG}"
+            fi
+          fi
