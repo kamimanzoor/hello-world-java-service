@@ -1,0 +1,19 @@
+name: pipelines-ci
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [ "**" ]
+jobs:
+  ci:
+    uses: ./.github/workflows/pipelines-ci-tbd.yml
+    with:
+      defaultBranch: main
+      buildTool: maven
+      imageName: ""
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
