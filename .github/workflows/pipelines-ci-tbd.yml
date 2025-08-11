@@ -146,6 +146,7 @@ jobs:
         id: create-release
         uses: softprops/action-gh-release@v1
         with:
+          body_path: CHANGELOG.md
           tag_name: ${{ steps.version.outputs.version }}
           name: Release ${{ steps.version.outputs.version }}
 
