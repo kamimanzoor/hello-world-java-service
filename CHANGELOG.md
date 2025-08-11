@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/kamimanzoor/hello-world-java-service/compare/1.1.1...1.2.0) (2025-08-11)
+
+
+### Features
+
+* add body_path for release notes in GitHub action ([f6b1aa3](https://github.com/kamimanzoor/hello-world-java-service/commit/f6b1aa3a0c9085f68e60f55a548c4e00bbdd786a))
+
 ### [1.1.1](https://github.com/kamimanzoor/hello-world-java-service/compare/1.1.0...1.1.1) (2025-08-11)
 
 
