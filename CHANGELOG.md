@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/kamimanzoor/hello-world-java-service/compare/1.1.0...1.1.1) (2025-08-11)
+
+
+### Bug Fixes
+
+* update image tag ([ef080ad](https://github.com/kamimanzoor/hello-world-java-service/commit/ef080ad28699571e0ad24170033b465c8ce86cc3))
+
 ## 1.1.0 (2025-08-11)
 
 
