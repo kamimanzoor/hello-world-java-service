@@ -5,7 +5,13 @@ on:
     branches:
       - main
   pull_request:
-    branches: [ "**" ]
+    branches:
+      - main
+
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   ci:
     uses: ./.github/workflows/pipelines-ci-tbd.yml
@@ -13,6 +19,7 @@ jobs:
       defaultBranch: main
       buildTool: maven
       imageName: ""
+      acr: mydemoacr1604.azurecr.io
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}

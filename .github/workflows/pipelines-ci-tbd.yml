@@ -27,11 +27,6 @@ on:
       AZURE_SUBSCRIPTION_ID:
         required: true
 
-permissions:
-  contents: write
-  packages: write
-  id-token: write
-
 jobs:
   build_publish_image:
     name: Build & Publish Image
