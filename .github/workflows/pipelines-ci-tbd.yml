@@ -67,36 +67,24 @@ jobs:
           fi
           echo "event=$EVENT ref=$REF_NAME"
 
-      - name: Setup Node (release only)
+      - name: Run Release Please
         if: steps.vars.outputs.perform_release == 'true'
-        uses: actions/setup-node@v4
+        uses: google-github-actions/release-please-action@v4
+        id: release
         with:
-          node-version: 20
-
-      - name: Install standard-version (release only)
-        if: steps.vars.outputs.perform_release == 'true'
-        run: |
-          npm i -g standard-version
-          git config user.email "pipelinebot@bot.com"
-          git config user.name "Pipeline Bot"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compute version
         id: version
         run: |
-          if [ "${{ steps.vars.outputs.perform_release }}" = "true" ]; then
-            standard-version --git-tag-fallback --packageFiles version.txt --bumpFiles version.txt \
-              -t "" --releaseCommitMessageFormat "chore(release): {{currentTag}} [skip ci]"
-            ver=$(git describe --abbrev=0 --tags)
+          if [ "${{ steps.vars.outputs.perform_release }}" = "true" ] && [ -n "${{ steps.release.outputs.tag_name }}" ]; then
+            ver="${{ steps.release.outputs.tag_name }}"
           else
             ver="${{ steps.vars.outputs.sha_tag }}"
           fi
           echo "image_tag=$ver" >> $GITHUB_OUTPUT
           echo "version=$ver" >> $GITHUB_OUTPUT
           echo "Resolved image_tag=$ver"
-
-      - name: Push release tag
-        if: steps.vars.outputs.perform_release == 'true'
-        run: git push --follow-tags origin HEAD:${{ inputs.defaultBranch }}
 
       - name: Setup JDK (maven)
         if: inputs.buildTool == 'maven'
@@ -140,15 +128,6 @@ jobs:
               docker push "$img:${SHA_TAG}"
             fi
           fi
-
-      - name: Create Release
-        if: steps.vars.outputs.perform_release == 'true'
-        id: create-release
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: CHANGELOG.md
-          tag_name: ${{ steps.version.outputs.version }}
-          name: Release ${{ steps.version.outputs.version }}
 
       - name: Trigger Deployment
         id: trigger-deployment
