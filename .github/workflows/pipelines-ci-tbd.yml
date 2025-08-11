@@ -131,7 +131,7 @@ jobs:
             ./mvnw versions:set -DnewVersion="${IMAGE_TAG}" -DprocessDependencies=false -DprocessPlugins=false \
               -DprocessParent=false -DprocessFromLocalAggregationRoot=false -DgenerateBackupPoms=false
             # Expect jib configured to use $ACR + IMAGE_NAME internally; fallback to explicit if needed
-            ./mvnw --batch-mode package -Djib.to.image="$ACR/${IMAGE_NAME}" -Djib.to.tags="${SHA_TAG},latest-dev"
+            ./mvnw --batch-mode package -Djib.to.image="$ACR/${IMAGE_NAME}" -Djib.to.tags="${IMAGE_TAG},latest-dev"
           else
             img="$ACR/${IMAGE_NAME}"
             docker build -t "$img:${IMAGE_TAG}" -t "$img:${SHA_TAG}" .
