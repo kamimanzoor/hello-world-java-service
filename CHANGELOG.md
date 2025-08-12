@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.1](https://github.com/kamimanzoor/hello-world-java-service/compare/2.2.0...2.2.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* update GIT_REF environment variable handling in CI workflow ([8593aad](https://github.com/kamimanzoor/hello-world-java-service/commit/8593aaddcc4e5a910c349bb28f71954b730fe98c))
+
 ## [2.2.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.1.0...2.2.0) (2025-08-12)
 
 
