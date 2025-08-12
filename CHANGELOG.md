@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.5.0...2.6.0) (2025-08-12)
+
+
+### Features
+
+* add dummy comment to README for PR demo ([381177b](https://github.com/kamimanzoor/hello-world-java-service/commit/381177b19725bf8ef526ffb2e901f90bfd0d28e8))
+* create codeql.yml ([c225a52](https://github.com/kamimanzoor/hello-world-java-service/commit/c225a5255c3b3b1c27df6dbffff055cc393f7cf9))
+
 ## [2.5.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.4.0...2.5.0) (2025-08-12)
 
 
