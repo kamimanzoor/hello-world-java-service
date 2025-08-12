@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.7.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.6.1...2.7.0) (2025-08-12)
+
+
+### Features
+
+* add hello-world workflow [skip ci] ([9b49ad4](https://github.com/kamimanzoor/hello-world-java-service/commit/9b49ad4e3a78cb94f909f5550200b892137064e1))
+* awesome feature ([0013de4](https://github.com/kamimanzoor/hello-world-java-service/commit/0013de4d453fe0e1968122dce063bb783c19a1c3))
+* create starter.yml [skip ci] ([e58b41f](https://github.com/kamimanzoor/hello-world-java-service/commit/e58b41fbdb8f5ca20a7e4b9b844fd5634a85ce5a))
+
+
+### Bug Fixes
+
+* update cron schedule and repository dispatch path; improve runner matrix [skip ci] ([0905e2d](https://github.com/kamimanzoor/hello-world-java-service/commit/0905e2dbb7aff53ff9158160bb8213b4314db87a))
+
 ## [2.6.1](https://github.com/kamimanzoor/hello-world-java-service/compare/2.6.0...2.6.1) (2025-08-12)
 
 
