@@ -74,11 +74,13 @@ jobs:
         uses: googleapis/release-please-action@v4
         id: release
       - name: Display outputs
+        if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true' || steps.vars.outputs.perform_release == 'false'
         run: |
           echo "tag_name: ${{ steps.release.outputs.tag_name }}"
           echo "release_created: ${{ steps.release.outputs.release_created }}"
 
       - name: Compute version
+        if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true' || steps.vars.outputs.perform_release == 'false'
         id: version
         run: |
           if [ "${{ steps.vars.outputs.perform_release }}" = "true" ] && [ -n "${{ steps.release.outputs.tag_name }}" ]; then
@@ -91,7 +93,7 @@ jobs:
           echo "Resolved image_tag=$ver"
 
       - name: Setup JDK (maven)
-        if: inputs.buildTool == 'maven'
+        if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true' || steps.vars.outputs.perform_release == 'false'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -99,6 +101,7 @@ jobs:
           cache: maven
 
       - name: Azure Login
+        if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true' || steps.vars.outputs.perform_release == 'false'
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -106,6 +109,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Build & Push Image
+        if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true' || steps.vars.outputs.perform_release == 'false'
         env:
           DEFAULT_BRANCH: ${{ inputs.defaultBranch }}
           IMAGE_NAME: ${{ steps.vars.outputs.image_name }}
@@ -134,6 +138,7 @@ jobs:
           fi
 
       - name: Trigger Deployment
+        if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true' || steps.vars.outputs.perform_release == 'false'
         id: trigger-deployment
         run: |
           curl \
