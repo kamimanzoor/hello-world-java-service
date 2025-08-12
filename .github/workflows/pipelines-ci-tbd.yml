@@ -51,7 +51,6 @@ jobs:
           if [ "$EVENT" = "push" ] && [ "$REF_NAME" = "$DEF" ]; then
             echo "perform_release=true" >> $GITHUB_OUTPUT
             echo "sha_tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
-            echo "GIT_REF=$GITHUB_REF" >> "$GITHUB_ENV"
           elif [ "$EVENT" = "pull_request" ]; then
             pr_sha=$(jq -r '.pull_request.head.sha' "$GITHUB_EVENT_PATH")
             echo "perform_release=false" >> $GITHUB_OUTPUT
@@ -78,6 +77,7 @@ jobs:
         run: |
           echo "tag_name: ${{ steps.release.outputs.tag_name }}"
           echo "release_created: ${{ steps.release.outputs.release_created }}"
+          echo "GIT_REF=${{ steps.release.outputs.tag_name }}" >> "$GITHUB_ENV"
 
       - name: Compute version
         if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true' || steps.vars.outputs.perform_release == 'false'
