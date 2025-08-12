@@ -77,7 +77,8 @@ jobs:
       - name: Pull request event message
         if: github.event_name == 'pull_request'
         run: echo "This workflow was triggered by a pull request"
+      
       - name: Custom action
         uses: kamimanzoor/hello-world-docker-action@main
         with:
-          who-to-greet: 'Kamran'
+          who-to-greet: ${{ github.event.inputs.name }}
