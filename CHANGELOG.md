@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.2.1...2.3.0) (2025-08-12)
+
+
+### Features
+
+* remove version input from deploy workflows ([cac2e14](https://github.com/kamimanzoor/hello-world-java-service/commit/cac2e1443b53e57cb00a71228d717e1e56882d0b))
+
 ## [2.2.1](https://github.com/kamimanzoor/hello-world-java-service/compare/2.2.0...2.2.1) (2025-08-12)
 
 
