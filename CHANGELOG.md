@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.4.0...2.5.0) (2025-08-12)
+
+
+### Features
+
+* enhance pull request handling in CI workflow ([680e6fe](https://github.com/kamimanzoor/hello-world-java-service/commit/680e6fe1b7716efef975ff3c4110f274aa92c1e1))
+
+
+### Bug Fixes
+
+* refine condition for displaying release outputs ([bd61749](https://github.com/kamimanzoor/hello-world-java-service/commit/bd6174906cff8425c4fd64fff832a7a2e831c4df))
+
 ## [2.4.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.3.0...2.4.0) (2025-08-12)
 
 
