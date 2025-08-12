@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.1.0...2.2.0) (2025-08-12)
+
+
+### Features
+
+* add conditional checks for release steps in CI workflow ([26fe995](https://github.com/kamimanzoor/hello-world-java-service/commit/26fe995832ffad3d2142ce86c8dbcf0a63099389))
+
 ## [2.1.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.0.0...2.1.0) (2025-08-12)
 
 
