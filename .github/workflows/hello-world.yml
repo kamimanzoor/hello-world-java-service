@@ -1,0 +1,79 @@
+# Hello World GitHub Actions Workflow - demonstrates the basics of GitHub Actions
+name: hello-world
+
+# When this workflow should run
+on:
+  # Triggers the workflow on push or pull request events for the main branch
+  push:
+    branches: 
+      - 'main'
+  pull_request:
+    branches: 
+      - 'main'
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Your name'
+        required: false
+        default: 'World'
+        type: string
+
+# Environment variables available to all jobs
+env:
+  GLOBAL_MESSAGE: "Hello from GitHub Actions!"
+
+# A workflow run is made up of one or more jobs
+jobs:
+  # This is the first job called "greet"
+  greet:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    # Environment variables specific to this job
+    env:
+      JOB_MESSAGE: "This is from the greet job"
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Basic Hello World step
+      - name: Say Hello
+        run: echo "Hello, World! 👋"
+      
+      # Use environment variables
+      - name: Display environment variables
+        run: |
+          echo "Global message: $GLOBAL_MESSAGE"
+          echo "Job message: $JOB_MESSAGE"
+          echo "Runner OS: $RUNNER_OS"
+          echo "GitHub Actor: $GITHUB_ACTOR"
+          echo "Repository: $GITHUB_REPOSITORY"
+      
+      # Use workflow input (if triggered manually)
+      - name: Greet with custom name
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "Hello, ${{ github.event.inputs.name }}! 🎉"
+      
+      # Multi-line script example
+      - name: Multi-line script
+        run: |
+          echo "=== GitHub Actions Demo ==="
+          echo "Current date: $(date)"
+          echo "Current working directory: $(pwd)"
+          echo "Files in current directory:"
+          ls -la
+          echo "==========================="
+            
+      # Conditional step based on event type
+      - name: Push event message
+        if: github.event_name == 'push'
+        run: echo "This workflow was triggered by a push to ${{ github.ref_name }}"
+      
+      - name: Pull request event message
+        if: github.event_name == 'pull_request'
+        run: echo "This workflow was triggered by a pull request"
