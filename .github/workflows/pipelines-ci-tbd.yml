@@ -77,7 +77,7 @@ jobs:
         uses: googleapis/release-please-action@v4
         id: release
       - name: Display outputs
-        if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true' || steps.vars.outputs.perform_release == 'false'
+        if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true'
         run: |
           echo "tag_name: ${{ steps.release.outputs.tag_name }}"
           echo "release_created: ${{ steps.release.outputs.release_created }}"
