@@ -148,7 +148,6 @@ jobs:
             -d "{
               \"ref\":\"${GIT_REF}\",
               \"inputs\":{ 
-                \"version\":\"${{ steps.version.outputs.version }}\",
                 \"environment\":\"dev\"
               }
             }"

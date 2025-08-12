@@ -3,10 +3,6 @@ name: deploy-service
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: Override image version (optional)
-        required: false
-        default: 1d407d64639eadca042f5bc765c05fb5f1f5a856
       environment:
         description: Target environment (e.g. dev)
         required: true
