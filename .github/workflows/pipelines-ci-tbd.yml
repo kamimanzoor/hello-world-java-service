@@ -52,14 +52,18 @@ jobs:
             echo "perform_release=true" >> $GITHUB_OUTPUT
             echo "sha_tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
           elif [ "$EVENT" = "pull_request" ]; then
+            echo "this is a pull request"
             pr_sha=$(jq -r '.pull_request.head.sha' "$GITHUB_EVENT_PATH")
             echo "perform_release=false" >> $GITHUB_OUTPUT
             echo "sha_tag=${pr_sha}" >> $GITHUB_OUTPUT
             echo "GIT_REF=${{ github.event.pull_request.head.ref }}" >> "$GITHUB_ENV"
+            echo "GIT_REF=${{ github.event.pull_request.head.ref }}"
           else
+            echo "this is branch build"
             echo "perform_release=false" >> $GITHUB_OUTPUT
             echo "sha_tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
             echo "GIT_REF=$GITHUB_REF" >> "$GITHUB_ENV"
+
           fi
           if [ -n "${{ inputs.imageName }}" ]; then
             echo "image_name=${{ inputs.imageName }}" >> $GITHUB_OUTPUT
@@ -141,6 +145,7 @@ jobs:
         if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true' || steps.vars.outputs.perform_release == 'false'
         id: trigger-deployment
         run: |
+          echo "GIT_REF=${GIT_REF}"
           curl \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
