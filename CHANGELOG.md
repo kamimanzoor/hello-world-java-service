@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.1](https://github.com/kamimanzoor/hello-world-java-service/compare/2.6.0...2.6.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* add permissions ([fb6a7e7](https://github.com/kamimanzoor/hello-world-java-service/commit/fb6a7e7b0ec7a7e5cb45eb5aa30fcfc1256dc9d2))
+* update permissions to include id-token write access ([6a6cf86](https://github.com/kamimanzoor/hello-world-java-service/commit/6a6cf8664250ef88a9d511d78cfbf741bd86eb52))
+
 ## [2.6.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.5.0...2.6.0) (2025-08-12)
 
 
