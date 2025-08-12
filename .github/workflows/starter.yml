@@ -198,5 +198,9 @@ jobs:
           echo "📝 Message from reusable workflow: ${{ needs.reusable_workflow_example.outputs.message }}"
           echo "⏰ Timestamp from reusable workflow: ${{ needs.reusable_workflow_example.outputs.timestamp }}"
           echo "✨ Successfully called and received outputs from reusable workflow!"
+  self-hosted-runner:
+    runs-on: arc-runner-set
+    steps:
+    - run: echo "🎉 This job uses runner scale set runners!"
   
   
