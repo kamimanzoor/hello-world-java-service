@@ -1,0 +1,45 @@
+name: Reusable Hello World Workflow
+
+# This workflow can be called by other workflows
+on:
+  workflow_call:
+    # Input parameters that can be passed from the calling workflow
+    inputs:
+      greeting:
+        description: 'The greeting message to display'
+        required: false
+        default: 'Hello'
+        type: string
+    # Outputs that can be used by the calling workflow
+    outputs:
+      message:
+        description: 'The generated greeting message'
+        value: ${{ jobs.greet.outputs.greeting_message }}
+      timestamp:
+        description: 'When the workflow ran'
+        value: ${{ jobs.greet.outputs.run_time }}
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    outputs:
+      greeting_message: ${{ steps.create-message.outputs.message }}
+      run_time: ${{ steps.create-message.outputs.timestamp }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Display inputs
+        run: |
+          echo "🎯 Greeting: ${{ inputs.greeting }}"
+      
+      - name: Create greeting message
+        id: create-message
+        run: |
+          MESSAGE="${{ inputs.greeting }}! Welcome to Github! 🚀"
+          TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+          echo "message=$MESSAGE" >> $GITHUB_OUTPUT
+          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
+          echo "📢 Generated message: $MESSAGE"
+          echo "⏰ Timestamp: $TIMESTAMP"

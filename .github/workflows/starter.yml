@@ -4,6 +4,7 @@ on:
   # Webhook events
   push:
     branches: 
+      - 'main'
       - 'release/*'
     paths-ignore: 
       - '.github/workflows'
@@ -179,3 +180,23 @@ jobs:
         with:
           add-labels: documentation
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  reusable_workflow_example:
+    name: Reusable Workflow Demo
+    uses: ./.github/workflows/reusable-hello-world.yml
+    with:
+      greeting: 'Hello'
+
+  use_reusable_outputs:
+    name: Use Reusable Workflow Outputs
+    runs-on: ubuntu-latest
+    needs: reusable_workflow_example
+    
+    steps:
+      - name: Display outputs from reusable workflow
+        run: |
+          echo "📝 Message from reusable workflow: ${{ needs.reusable_workflow_example.outputs.message }}"
+          echo "⏰ Timestamp from reusable workflow: ${{ needs.reusable_workflow_example.outputs.timestamp }}"
+          echo "✨ Successfully called and received outputs from reusable workflow!"
+  
+  
