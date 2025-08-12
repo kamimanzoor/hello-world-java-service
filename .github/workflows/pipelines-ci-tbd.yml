@@ -27,9 +27,7 @@ on:
       AZURE_SUBSCRIPTION_ID:
         required: true
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: write-all
 
 jobs:
   build_publish_image:
