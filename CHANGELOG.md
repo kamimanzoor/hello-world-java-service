@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.9.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.8.0...2.9.0) (2025-08-13)
+
+
+### Features
+
+* add another dummy comment for new PR demonstration ([1ce5497](https://github.com/kamimanzoor/hello-world-java-service/commit/1ce5497500f8bba420b98c03b9a2382f09523b67))
+
 ## [2.8.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.7.0...2.8.0) (2025-08-13)
 
 
