@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.8.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.7.0...2.8.0) (2025-08-13)
+
+
+### Features
+
+* add custom action to greet a specific user in the workflow [skip ci] ([2b9670d](https://github.com/kamimanzoor/hello-world-java-service/commit/2b9670d9ba5e743a1c687469cdbf0130c7ff58bd))
+* add reusable Hello World workflow and integrate it into starter workflow [skip ci] ([6844dc6](https://github.com/kamimanzoor/hello-world-java-service/commit/6844dc6a99172bcac40ea8d182e44b6819b3ddfa))
+* add self-hosted runner job to the workflow [skip ci] ([0e61b2a](https://github.com/kamimanzoor/hello-world-java-service/commit/0e61b2af8db88d1749f6ec529b8cc70d9fe32c6c))
+* update custom action to greet user based on input name [skip ci] ([fa831c3](https://github.com/kamimanzoor/hello-world-java-service/commit/fa831c3d55a75c7d871852a253bc413f4dec21d4))
+* update dummy change comment for clarity in README ([7710589](https://github.com/kamimanzoor/hello-world-java-service/commit/771058910b82ce7d8818726b6f378e12f40a35d1))
+
 ## [2.7.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.6.1...2.7.0) (2025-08-12)
 
 
