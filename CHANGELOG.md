@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.10.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.9.0...2.10.0) (2025-08-19)
+
+
+### Features
+
+* add dependabot config file ([bc63845](https://github.com/kamimanzoor/hello-world-java-service/commit/bc6384598f2199767c20507e61ca2ee86bfa8380))
+* add devcontainer configuration for Java development ([7dcb0a0](https://github.com/kamimanzoor/hello-world-java-service/commit/7dcb0a07d25f079a68168188b47aded26f2398b8))
+* add github-actions package ecosystem to dependabot configuration ([15b2d00](https://github.com/kamimanzoor/hello-world-java-service/commit/15b2d00c7a5cfd2ca1aff466bc301dd14dd5dec4))
+* add linter workflow for code quality checks ([096f01a](https://github.com/kamimanzoor/hello-world-java-service/commit/096f01a663eda5f59a886d1d3af2288bad554afc))
+* add pull request template for contribution guidelines ([5583f13](https://github.com/kamimanzoor/hello-world-java-service/commit/5583f134b55d1468a992f5721584c94f59ca4445))
+* remove docker package ecosystem from dependabot configuration ([57b5ea1](https://github.com/kamimanzoor/hello-world-java-service/commit/57b5ea11e9bd750ed17522fdbd10f41a1afc311b))
+* remove pull_request trigger from linter workflow ([df23dbc](https://github.com/kamimanzoor/hello-world-java-service/commit/df23dbc59cd00c3c8fd8089919645d9fcff26ecc))
+* update dependabot configuration to specify package ecosystems for docker and npm ([675ad04](https://github.com/kamimanzoor/hello-world-java-service/commit/675ad0408b5d081dbc4e88abd65e2be7f145521d))
+
 ## [2.9.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.8.0...2.9.0) (2025-08-13)
 
 
