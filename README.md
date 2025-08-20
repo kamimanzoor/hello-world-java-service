@@ -1,6 +1,6 @@
 # hello-world-java-service
 
-<!-- Dummy change for demo feature -->
+<!-- Dummy change for demo feature of PR template-->
 <!-- Another dummy change for new PR demonstration -->
 
 This repository is meant to be used as a template microservice implemented using [Spring Boot](https://spring.io/projects/spring-boot) framework in Java. The purpose is to have a service which we may easily spin up on an AKS cluster using CI/CD pipelines.
