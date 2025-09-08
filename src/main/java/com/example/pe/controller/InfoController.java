@@ -1,5 +1,7 @@
 package com.example.pe.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +26,16 @@ public class InfoController {
         Map<String, String> resp = new HashMap<>();
         resp.put("application", applicationName);
         resp.put("version", buildVersion);
+        return resp;
+    }
+
+    @RequestMapping(value = "/getDate", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Map<String,String> getDate() {
+        Map<String, String> resp = new HashMap<>();
+        LocalDateTime now = LocalDateTime.now();
+        String formattedDate = now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        resp.put("currentDate", formattedDate);
         return resp;
     }
 }
