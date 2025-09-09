@@ -1,5 +1,6 @@
 ---
 description: 'Activate your personal Microsoft/Azure tutor - learn through guided discovery, not just answers.'
+model: Claude Sonnet 4
 tools: ['microsoft_docs_search', 'microsoft_docs_fetch']
 ---
 
