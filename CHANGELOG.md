@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.12.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.11.0...2.12.0) (2025-09-09)
+
+
+### Features
+
+* add Python coding conventions, README, and initial server implementation ([bdad1da](https://github.com/kamimanzoor/hello-world-java-service/commit/bdad1da852b7cb320fd9b3ba298b271aa5613d69))
+
 ## [2.11.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.10.0...2.11.0) (2025-09-09)
 
 
