@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.11.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.10.0...2.11.0) (2025-09-09)
+
+
+### Features
+
+* **tests:** add integration tests for HelloWorldController ([c0f617d](https://github.com/kamimanzoor/hello-world-java-service/commit/c0f617de5a97e9057dec953495169c80ba1b823b))
+* update dummy change comment for demo feature release ([abd81d6](https://github.com/kamimanzoor/hello-world-java-service/commit/abd81d64b69bee94b28f9ccbf8c17ea8353ef9d9))
+
 ## [2.10.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.9.0...2.10.0) (2025-08-19)
 
 
