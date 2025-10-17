@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.12.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.11.0...2.12.0) (2025-10-17)
+
+
+### Features
+
+* add guideline for Allman style formatting ([9c176ed](https://github.com/kamimanzoor/hello-world-java-service/commit/9c176ed29ab25c1420316889d31db26e0fe4cf12))
+* add model comparison table for AI models ([f4a242c](https://github.com/kamimanzoor/hello-world-java-service/commit/f4a242c070b4a2a0b4bd2dbbec8d75638780cdd8))
+* add new chat modes and prompts for AI agents ([b692231](https://github.com/kamimanzoor/hello-world-java-service/commit/b692231fd94d00a8d41760cc70750d6b416b7b6b))
+* add Python coding conventions, README, and initial server implementation ([bdad1da](https://github.com/kamimanzoor/hello-world-java-service/commit/bdad1da852b7cb320fd9b3ba298b271aa5613d69))
+* **chatmode:** add Azure Principal Architect guidance ([01fc2a7](https://github.com/kamimanzoor/hello-world-java-service/commit/01fc2a7f70e81a05379d001cb5d96fc9a588aa6f))
+* **chatmode:** update model for Microsoft study mode ([e4d2491](https://github.com/kamimanzoor/hello-world-java-service/commit/e4d249154df5e48160711f724920b4fc03d4d615))
+* **mcp:** update awesome-copilot server configuration ([25450f7](https://github.com/kamimanzoor/hello-world-java-service/commit/25450f78f13a563e161420ac1e6b66c470aa461e))
+
 ## [2.11.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.10.0...2.11.0) (2025-09-09)
 
 
