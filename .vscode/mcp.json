@@ -1,14 +1,25 @@
 {
-  "servers": {
-    "awesome-copilot": {
-      "type": "stdio",
-      "command": "docker",
+	"servers": {
+		"awesome-copilot": {
+			"type": "stdio",
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"--rm",
+				"ghcr.io/microsoft/mcp-dotnet-samples/awesome-copilot:latest"
+			]
+		},
+		"weather-mcp": {
+			"url": "http://localhost:8123/mcp",
+			"type": "http"
+		},
+		"playwright": {
+      "command": "npx",
       "args": [
-        "run",
-        "-i",
-        "--rm",
-        "ghcr.io/microsoft/mcp-dotnet-samples/awesome-copilot:latest"
+        "@playwright/mcp@latest"
       ]
     }
-  }
+	},
+	"inputs": []
 }
