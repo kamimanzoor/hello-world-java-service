@@ -45,7 +45,7 @@ AI agent rules (project-specific)
 - When editing Java code: run `./mvnw test` after changes. When editing build or Docker image fields, run a local Jib build or package to validate.
 - Avoid editing generated or build artifacts under `target/` — they are outputs.
 - Respect Java 1.8 compatibility and Spring Boot 2.7.x APIs.
-- Respect Allman style for braces and indentation (4 spaces).
+- YOU MUST ALWAYS Respect Allman style for braces and indentation (4 spaces).
 
 Where to look first (quick pointers)
 - `pom.xml` — build, plugins (Jib), Java version
