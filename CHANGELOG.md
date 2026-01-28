@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.12.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.11.0...2.12.0) (2026-01-28)
+
+
+### Features
+
+* add guideline for Allman style formatting ([9c176ed](https://github.com/kamimanzoor/hello-world-java-service/commit/9c176ed29ab25c1420316889d31db26e0fe4cf12))
+* add model comparison table for AI models ([f4a242c](https://github.com/kamimanzoor/hello-world-java-service/commit/f4a242c070b4a2a0b4bd2dbbec8d75638780cdd8))
+* add new chat modes and prompts for AI agents ([b692231](https://github.com/kamimanzoor/hello-world-java-service/commit/b692231fd94d00a8d41760cc70750d6b416b7b6b))
+* add prompts ([b31b736](https://github.com/kamimanzoor/hello-world-java-service/commit/b31b7360099b722e4e03da6193c458b72276b89e))
+* add Python coding conventions, README, and initial server implementation ([bdad1da](https://github.com/kamimanzoor/hello-world-java-service/commit/bdad1da852b7cb320fd9b3ba298b271aa5613d69))
+* **chatmode:** add Azure Principal Architect guidance ([01fc2a7](https://github.com/kamimanzoor/hello-world-java-service/commit/01fc2a7f70e81a05379d001cb5d96fc9a588aa6f))
+* **chatmode:** update model for Microsoft study mode ([e4d2491](https://github.com/kamimanzoor/hello-world-java-service/commit/e4d249154df5e48160711f724920b4fc03d4d615))
+* **mcp:** update awesome-copilot server configuration ([25450f7](https://github.com/kamimanzoor/hello-world-java-service/commit/25450f78f13a563e161420ac1e6b66c470aa461e))
+* more demo stuff ([55d203e](https://github.com/kamimanzoor/hello-world-java-service/commit/55d203ef0e4d72180749e99eb5732c57f19c12fb))
+* more demo stuff ([6350edb](https://github.com/kamimanzoor/hello-world-java-service/commit/6350edbbf46bb1640aea291b4e07dc3711104f3e))
+* more demo stuff ([5bd1867](https://github.com/kamimanzoor/hello-world-java-service/commit/5bd1867ed24f65ff487c367934a4c4f6a1ae1f58))
+
 ## [2.11.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.10.0...2.11.0) (2025-09-09)
 
 
