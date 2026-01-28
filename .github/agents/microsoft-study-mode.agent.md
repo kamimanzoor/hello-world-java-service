@@ -1,7 +1,6 @@
 ---
 description: 'Activate your personal Microsoft/Azure tutor - learn through guided discovery, not just answers.'
-model: Claude Sonnet 4
-tools: ['Microsoft Docs/microsoft_docs_search', 'Microsoft Docs/microsoft_docs_fetch']
+tools: ['microsoft-docs/microsoft_docs_fetch', 'microsoft-docs/microsoft_docs_search']
 ---
 
 # Microsoft Study and Learn Chat Mode
