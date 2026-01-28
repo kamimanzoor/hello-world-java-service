@@ -17,8 +17,5 @@
     "editor.tabSize": 2,
     "github.copilot.nextEditSuggestions.enabled": true,
     "editor.aiStats.enabled": true,
-    "explorer.confirmDelete": false,
-    "chat.promptFilesRecommendations": {   
-        "onboarding-plan": true
-    }
+    "explorer.confirmDelete": false
 }
