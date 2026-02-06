@@ -56,11 +56,8 @@ jobs:
             -CertStoreLocation Cert:\CurrentUser\My `
             -Password $pwd
 
-          # Import to trusted root store for verification
-          Import-PfxCertificate `
-            -FilePath $path `
-            -CertStoreLocation Cert:\CurrentUser\Root `
-            -Password $pwd
+          # Import to trusted root store for verification (certutil -f skips UI prompt)
+          certutil -f -user -p "${{ secrets.CODESIGN_PFX_PASSWORD }}" -importpfx Root $path
 
       - name: Sign EXE
         shell: powershell
