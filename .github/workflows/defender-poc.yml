@@ -31,6 +31,35 @@ jobs:
           pyinstaller --onefile --clean --name ReputationTest app.py
         working-directory: defender-poc
 
+      - name: Import signing cert
+        shell: powershell
+        run: |
+          $bytes = [Convert]::FromBase64String("${{ secrets.CODESIGN_PFX_BASE64 }}")
+          $path = "$env:TEMP\codesign.pfx"
+          [IO.File]::WriteAllBytes($path, $bytes)
+
+          $pwd = ConvertTo-SecureString "${{ secrets.CODESIGN_PFX_PASSWORD }}" -AsPlainText -Force
+
+          Import-PfxCertificate `
+            -FilePath $path `
+            -CertStoreLocation Cert:\CurrentUser\My `
+            -Password $pwd
+
+      - name: Sign EXE
+        shell: powershell
+        run: |
+          signtool sign `
+            /fd SHA256 `
+            /n "GitHub Internal Code Signing" `
+            /tr http://timestamp.digicert.com `
+            /td SHA256 `
+            defender-poc\dist\ReputationTest.exe
+
+      - name: Verify signature
+        shell: powershell
+        run: |
+          signtool verify /pa defender-poc\dist\ReputationTest.exe
+        
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
