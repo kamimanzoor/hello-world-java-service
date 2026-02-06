@@ -31,6 +31,16 @@ jobs:
           pyinstaller --onefile --clean --name ReputationTest app.py
         working-directory: defender-poc
 
+      - name: Add signtool to PATH
+        shell: powershell
+        run: |
+          $sdkPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Directory | 
+            Where-Object { $_.Name -match '^\d+\.\d+\.\d+\.\d+$' } | 
+            Sort-Object Name -Descending | 
+            Select-Object -First 1
+          $signtoolPath = Join-Path $sdkPath.FullName "x64"
+          echo "$signtoolPath" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
       - name: Import signing cert
         shell: powershell
         run: |
