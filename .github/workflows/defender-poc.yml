@@ -51,13 +51,15 @@ jobs:
           $pwd = ConvertTo-SecureString "${{ secrets.CODESIGN_PFX_PASSWORD }}" -AsPlainText -Force
 
           # Import to personal store for signing
-          Import-PfxCertificate `
+          $cert = Import-PfxCertificate `
             -FilePath $path `
             -CertStoreLocation Cert:\CurrentUser\My `
             -Password $pwd
 
-          # Import to trusted root store for verification (certutil -f skips UI prompt)
-          certutil -f -user -p "${{ secrets.CODESIGN_PFX_PASSWORD }}" -importpfx Root $path
+          # Export public cert and import to trusted root for verification
+          $cerPath = "$env:TEMP\codesign.cer"
+          Export-Certificate -Cert $cert -FilePath $cerPath | Out-Null
+          Import-Certificate -FilePath $cerPath -CertStoreLocation Cert:\CurrentUser\Root | Out-Null
 
       - name: Sign EXE
         shell: powershell
