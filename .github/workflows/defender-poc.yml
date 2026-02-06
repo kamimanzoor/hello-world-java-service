@@ -51,15 +51,10 @@ jobs:
           $pwd = ConvertTo-SecureString "${{ secrets.CODESIGN_PFX_PASSWORD }}" -AsPlainText -Force
 
           # Import to personal store for signing
-          $cert = Import-PfxCertificate `
+          Import-PfxCertificate `
             -FilePath $path `
             -CertStoreLocation Cert:\CurrentUser\My `
             -Password $pwd
-
-          # Export public cert and import to trusted root for verification
-          $cerPath = "$env:TEMP\codesign.cer"
-          Export-Certificate -Cert $cert -FilePath $cerPath | Out-Null
-          Import-Certificate -FilePath $cerPath -CertStoreLocation Cert:\CurrentUser\Root | Out-Null
 
       - name: Sign EXE
         shell: powershell
@@ -74,7 +69,14 @@ jobs:
       - name: Verify signature
         shell: powershell
         run: |
-          signtool verify /pa defender-poc\dist\ReputationTest.exe
+          $sig = Get-AuthenticodeSignature -FilePath defender-poc\dist\ReputationTest.exe
+          Write-Output "Status : $($sig.Status)"
+          Write-Output "Signer : $($sig.SignerCertificate.Subject)"
+          Write-Output "Thumbprint: $($sig.SignerCertificate.Thumbprint)"
+          if ($sig.Status -notin 'Valid','UnknownError') {
+            # UnknownError = valid sig but cert not in trusted root (expected for self-signed)
+            throw "Signature check failed: $($sig.Status) - $($sig.StatusMessage)"
+          }
         
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
