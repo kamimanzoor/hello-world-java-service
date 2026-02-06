@@ -19,20 +19,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pyinstaller
-        working-directory: python-poc
+        working-directory: defender-poc
 
       # Optional: install app deps if you have them
       # - name: Install app requirements
       #   run: pip install -r requirements.txt
-      #   working-directory: python-poc
+      #   working-directory: defender-poc
 
       - name: Build Windows EXE
         run: |
           pyinstaller --onefile --clean --name ReputationTest app.py
-        working-directory: python-poc
+        working-directory: defender-poc
 
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
           name: ReputationTest
-          path: python-poc/dist/*.exe
+          path: defender-poc/dist/*.exe
