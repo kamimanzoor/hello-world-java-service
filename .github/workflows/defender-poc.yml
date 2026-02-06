@@ -50,9 +50,16 @@ jobs:
 
           $pwd = ConvertTo-SecureString "${{ secrets.CODESIGN_PFX_PASSWORD }}" -AsPlainText -Force
 
+          # Import to personal store for signing
           Import-PfxCertificate `
             -FilePath $path `
             -CertStoreLocation Cert:\CurrentUser\My `
+            -Password $pwd
+
+          # Import to trusted root store for verification
+          Import-PfxCertificate `
+            -FilePath $path `
+            -CertStoreLocation Cert:\CurrentUser\Root `
             -Password $pwd
 
       - name: Sign EXE
