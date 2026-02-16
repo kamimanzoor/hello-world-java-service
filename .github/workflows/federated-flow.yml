@@ -1,0 +1,27 @@
+name: Federated Client Credentials Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Azure Login via Federated Identity
+        uses: azure/login@v2
+        with:
+          client-id: 3f3f8408-d79a-48fe-bfa8-95a4d25494dd
+          tenant-id: 1f3f2503-0e72-4067-8f83-e255d2bdd630
+          allow-no-subscriptions: true
+
+      - name: Get Access Token for API
+        run: |
+          az account get-access-token \
+            --resource api://5ed39923-a4c5-4366-a547-c0f45df4a8a7 \
+            --query accessToken \
+            --output tsv | jq -R 'split(".") | .[1] | @base64d | fromjson'
