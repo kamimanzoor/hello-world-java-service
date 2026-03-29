@@ -98,7 +98,7 @@ jobs:
 
       - name: Setup JDK (maven)
         if: steps.vars.outputs.perform_release == 'true' && steps.release.outputs.release_created == 'true' || steps.vars.outputs.perform_release == 'false'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
