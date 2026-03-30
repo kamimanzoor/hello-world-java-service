@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.12.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.11.0...2.12.0) (2026-02-16)
+
+
+### Features
+
+* add code signing and verification steps ([1a3f6db](https://github.com/kamimanzoor/hello-world-java-service/commit/1a3f6db0ccbea51353084362c557b9387cf45103))
+* add federated client credentials test workflow ([bce9fca](https://github.com/kamimanzoor/hello-world-java-service/commit/bce9fca17f69b37e0feff53a307cc6579374d9c8))
+* add guideline for Allman style formatting ([9c176ed](https://github.com/kamimanzoor/hello-world-java-service/commit/9c176ed29ab25c1420316889d31db26e0fe4cf12))
+* add initial app.py with main function [skip ci] ([be473ea](https://github.com/kamimanzoor/hello-world-java-service/commit/be473ea70b6d141112627e262234b1ea57207292))
+* add model comparison table for AI models ([f4a242c](https://github.com/kamimanzoor/hello-world-java-service/commit/f4a242c070b4a2a0b4bd2dbbec8d75638780cdd8))
+* add new chat modes and prompts for AI agents ([b692231](https://github.com/kamimanzoor/hello-world-java-service/commit/b692231fd94d00a8d41760cc70750d6b416b7b6b))
+* add prompts ([b31b736](https://github.com/kamimanzoor/hello-world-java-service/commit/b31b7360099b722e4e03da6193c458b72276b89e))
+* add Python coding conventions, README, and initial server implementation ([bdad1da](https://github.com/kamimanzoor/hello-world-java-service/commit/bdad1da852b7cb320fd9b3ba298b271aa5613d69))
+* add signed and unsigned reputation test files [skip ci] ([0623abf](https://github.com/kamimanzoor/hello-world-java-service/commit/0623abf2e726cc5ae3314655197e72350b4ae7a5))
+* add signtool path setup in build workflow ([d309de4](https://github.com/kamimanzoor/hello-world-java-service/commit/d309de41946c0adfd3088442511fbaf5c03876b6))
+* add Windows EXE build workflow ([4002e22](https://github.com/kamimanzoor/hello-world-java-service/commit/4002e228015b022072974e082f6578bcdfc7e332))
+* **chatmode:** add Azure Principal Architect guidance ([01fc2a7](https://github.com/kamimanzoor/hello-world-java-service/commit/01fc2a7f70e81a05379d001cb5d96fc9a588aa6f))
+* **chatmode:** update model for Microsoft study mode ([e4d2491](https://github.com/kamimanzoor/hello-world-java-service/commit/e4d249154df5e48160711f724920b4fc03d4d615))
+* import signing certificate to personal and root stores ([4cfaaa5](https://github.com/kamimanzoor/hello-world-java-service/commit/4cfaaa55b3d6fe8c2a39b6c8824ee851d20d359f))
+* **mcp:** update awesome-copilot server configuration ([25450f7](https://github.com/kamimanzoor/hello-world-java-service/commit/25450f78f13a563e161420ac1e6b66c470aa461e))
+* more demo stuff ([55d203e](https://github.com/kamimanzoor/hello-world-java-service/commit/55d203ef0e4d72180749e99eb5732c57f19c12fb))
+* more demo stuff ([6350edb](https://github.com/kamimanzoor/hello-world-java-service/commit/6350edbbf46bb1640aea291b4e07dc3711104f3e))
+* more demo stuff ([5bd1867](https://github.com/kamimanzoor/hello-world-java-service/commit/5bd1867ed24f65ff487c367934a4c4f6a1ae1f58))
+
+
+### Bug Fixes
+
+* correct working directory in build workflow ([01791e3](https://github.com/kamimanzoor/hello-world-java-service/commit/01791e35e40a112ab49e5f0ec8c567895e43ce2a))
+* streamline certificate import and verification process ([b57f8cb](https://github.com/kamimanzoor/hello-world-java-service/commit/b57f8cb5deec584c3e3649e04b037d0ecf56679c))
+* update certificate import method for root store ([a2f7cee](https://github.com/kamimanzoor/hello-world-java-service/commit/a2f7ceea8d81c1659f4760ad9ae9d3fbac7a6c23))
+* update certificate import process for verification ([ae80954](https://github.com/kamimanzoor/hello-world-java-service/commit/ae80954595ddbf014410e71f1da58fafe24bf291))
+
 ## [2.11.0](https://github.com/kamimanzoor/hello-world-java-service/compare/2.10.0...2.11.0) (2025-09-09)
 
 
